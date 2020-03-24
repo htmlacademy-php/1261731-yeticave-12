@@ -1,7 +1,8 @@
 # Личный проект «YetiCave»
 
+
 * Студент: [Игорь Калач](https://up.htmlacademy.ru/php/12/user/1261731).
-* Наставник: `Сергей Рожков`.
+* Наставник: [Сергей Рожков] (https://htmlacademy.ru/profile/id1069033).
 
 ---
 
