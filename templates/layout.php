@@ -42,15 +42,15 @@
 					</nav>
 				</div>
 			</header>
-				<?=$content;?>
+				<?= $content; ?>
     </div>
 
 		<footer class="main-footer">
 			<nav class="nav">
 				<ul class="nav__list container">
 					<!--заполните этот список из массива категорий-->
-
-					<?php while ($i < $sizeArray): ?>
+                    <?php $i = 0; ?>
+					<?php while ($i < count($categories)): ?>
                     <li class="nav__item">
 						<a href="pages/all-lots.html"><?=$categories[$i];?></a>
 					</li>

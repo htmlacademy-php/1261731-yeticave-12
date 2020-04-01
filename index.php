@@ -3,8 +3,7 @@ $title = "Главная";
 $is_auth = rand(0, 1);
 
 $user_name = 'Igor'; // укажите здесь ваше имя
-$i = 0;
-$j = 0;
+
 $categories = [
     "Доски и лыжи",
     "Крепления",
@@ -53,7 +52,7 @@ $lots = [
     ]
 
 ];
-$sizeArray = count($categories);
+
 
 function cost($cost) {
     $cost = ceil($cost);
@@ -64,19 +63,26 @@ function cost($cost) {
     return $cost." ";
 };
 
-function include_template($path, $data = []) {
+function include_template($path, array $data = []) {
+    $path = 'templates/' . $path;
+    $page = '';
 
-    foreach ($data as $key => $value) {
-       $$key = $value;
-    };
 
-    $page = require_once($path);
+    if (!is_readable($path)) {
+        return $page;
+    }
+
+    ob_start();
+    extract($data);
+    require_once $path;
+
+    $page = ob_get_clean();
 
     return $page;
 };
 
-$page_content = include_template('templates/main.php', ['lots' => $lots, 'categories' => $categories]);
-$layout_content = include_template('templates/layout.php', ['content' => $page_content, 'title' => $title, 'user_name' => $user_name]);
+$page_content = include_template('main.php', ['lots' => $lots, 'categories' => $categories]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => $title, 'is_auth' => $is_auth, 'user_name' => $user_name, 'categories' => $categories]);
 
 
 print($layout_content);
