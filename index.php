@@ -1,63 +1,35 @@
 <?php
 $title = "Главная";
 $is_auth = rand(0, 1);
-
 $user_name = 'Igor'; // укажите здесь ваше имя
 
-$categories = [
-    "Доски и лыжи",
-    "Крепления",
-    "Ботинки",
-    "Одежда",
-    "Инструменты",
-    "Разное"
-];
+function query_result($query) {
+    $dbconnection = mysqli_connect("localhost", "Igor", "123", "YetiCave");
+    mysqli_set_charset($dbconnection, "utf8");
+    if ($dbconnection == false) {
+        print("Error connection to data base: " . mysqli_connect_error());
+    }
 
-$lots = [
-    [
-        "name" => "2014 Rossignol District Snowboard",
-        "category" => $categories[0],
-        "cost" => 10999,
-        "url" => "img/lot-1.jpg",
-        "expiration_time" => "2020-04-01"
-    ],
-    [
-        "name" => "DC Ply Mens 2016/2017 Snowboard",
-        "category" => $categories[0],
-        "cost" => 159999,
-        "url" => "img/lot-2.jpg",
-        "expiration_time" => "2020-10-20"
-    ],
-    [
-        "name" => "Крепления Union Contact Pro 2015 года размер L/XL",
-        "category" => $categories[1],
-        "cost" => 8000,
-        "url" => "img/lot-3.jpg",
-        "expiration_time" => "2020-04-30"
-    ],
-    [
-        "name" => "Ботинки для сноуборда DC Mutiny Charocal",
-        "category" => $categories[2],
-        "cost" => 10999,
-        "url" => "img/lot-4.jpg",
-        "expiration_time" => "2020-08-20"
-    ],
-    [
-        "name" => "Куртка для сноуборда DC Mutiny Charocal",
-        "category" => $categories[3],
-        "cost" => 7500,
-        "url" => "img/lot-5.jpg",
-        "expiration_time" => "2020-09-21"
-    ],
-    [
-        "name" => "Маска Oakley Canopy",
-        "category" => $categories[5],
-        "cost" => 5400,
-        "url" => "img/lot-6.jpg",
-        "expiration_time" => "2020-07-20"
-    ]
+    $query = mysqli_query($dbconnection, $query);
 
-];
+    if (!$query) {
+        $error = mysqli_error($dbconnection);
+        print("Error in MySQL: " . $error);
+    }
+
+    $result = mysqli_fetch_all($query, MYSQLI_ASSOC);
+
+    return $result;
+}
+
+$sql_lots = "SELECT Categories.name AS category, Lots.name, cost_start, photo, date_finished AS expiration_time FROM Lots
+    INNER JOIN Categories ON Lots.category_id=Categories.id
+    LEFT JOIN Rates ON Rates.lot_id=Lots.id
+    ORDER BY Lots.id DESC LIMIT 6";
+$sql_categories = "SELECT name, symbol_code FROM Categories ORDER BY id ASC";
+
+$lots = query_result($sql_lots);
+$categories = query_result($sql_categories);
 
 
 function cost($cost)
