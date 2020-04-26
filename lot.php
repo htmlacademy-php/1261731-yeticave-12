@@ -29,8 +29,9 @@ if (!isset($id) || empty($item_lot)) {
 else {
     $page_content = include_template('main_lot.php', ['menu_lot' => $menu_lot, 'item_lot' => $item_lot, 'time_limited' => $time_limited]);
 }
-
+$head = include_template('head_lot_index.php');
 $layout_content = include_template('layout.php', [
+    'head' => $head,
     'content' => $page_content,
     'title' => $title,
     'is_auth' => $is_auth,

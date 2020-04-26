@@ -21,9 +21,12 @@ $lots = query_result($db_connection, $sql_lots);
 $sql_categories = "SELECT name, symbol_code FROM Categories ORDER BY id ASC";
 $categories = query_result($db_connection, $sql_categories);
 
+
 $menu_category = include_template('menu_index.php', ['categories' => $categories]);
 $page_content = include_template('main.php', ['lots' => $lots, 'menu_category' => $menu_category]);
+$head = include_template('head_lot_index.php');
 $layout_content = include_template('layout.php', [
+    'head' => $head,
     'content' => $page_content,
     'title' => $title,
     'is_auth' => $is_auth,
