@@ -10,18 +10,15 @@ require_once('functions/cost.php');
 require_once('functions/include_template.php');
 require_once('functions/count_time.php');
 require_once('functions/get_post_val.php');
+require_once('functions/validation.php');
 require_once('functions/load_files.php');
-require_once('functions/validation/is_empty.php');
-require_once('functions/validation/validate_lot_rate.php');
-require_once('functions/validation/validate_lot_step.php');
-require_once('functions/validation/validate_category.php');
-require_once('functions/validation/compare_dates.php');
 
 
-$db_connection = connect_to_db();
+
+$db_connection = connectToDatabase();
 
 $sql_categories = "SELECT id, name, symbol_code FROM Categories ORDER BY id ASC";
-$categories = query_result($db_connection, $sql_categories);
+$categories = queryResult($db_connection, $sql_categories);
 
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) {
@@ -29,9 +26,9 @@ if (isset($_POST['submit'])) {
     } else {
         $rules = [
             'lot-rate' => validateLotRate('lot-rate'),
+            'avatar' => validateFiles('avatar'),
             'lot-step' => validateLotStep('lot-step'),
-            'avatar' => loadFiles('avatar'),
-            'category' => validate_category('category'),
+            'category' => validateCategory('category'),
             'lot-date' => compareDates('lot-date')
         ];
 
@@ -40,17 +37,18 @@ if (isset($_POST['submit'])) {
                 $rule = $rules[$key];
                 $errors[$key] = $rule;
             }
-        }
-        if (isset($rules['avatar'])) {
-            $errors['avatar'] = $rules['avatar'];
+            if (isset($rules['avatar'])) {
+                $errors['avatar'] = $rules['avatar'];
+            }
         }
 
     }
-    $file_name = $_FILES['avatar']['name'];
+
 }
 
 
 if (!isset($errors) && isset($_POST['lot-name'])) {
+    $file_name = $_FILES['avatar']['name'];
 
     $user_id = 1;
     $category_id = $_POST['category'];
@@ -70,17 +68,19 @@ if (!isset($errors) && isset($_POST['lot-name'])) {
     mysqli_stmt_execute($add_new_lot);
 
     $sql_lot_id = "SELECT id FROM Lots ORDER BY id DESC LIMIT 1";
-    $id_last_lot = query_result($db_connection, $sql_lot_id);
+    $id_last_lot = queryResult($db_connection, $sql_lot_id);
     $id_last_lot = $id_last_lot[0]['id'];
+
+    loadFiles('avatar');
 
     header("Location:lot.php?id=$id_last_lot");
 }
 
-$menu_lot = include_template('menu_lot.php', ['categories' => $categories]);
-$page_content = include_template('add_lot.php',
+$menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
+$page_content = includeTemplate('add_lot.php',
     ['menu_lot' => $menu_lot, 'categories' => $categories, 'errors' => $errors]);
-$head = include_template('head_add_lot.php');
-$layout_content = include_template('layout.php', [
+$head = includeTemplate('head_add_lot.php');
+$layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
     'title' => $title,

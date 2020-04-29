@@ -1,5 +1,5 @@
 <?php
-function count_time($expiration_date)
+function countTime($expiration_date)
 {
     $current_date = date('Y-m-d H:i');
 

@@ -1,5 +1,5 @@
 <?php
-function connect_to_db()
+function connectToDatabase()
 {
     $db_connection = mysqli_connect("localhost", "Igor", "123", "YetiCave");
     mysqli_set_charset($db_connection, "utf8");

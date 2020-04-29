@@ -28,7 +28,7 @@
                                 <span class="lot__amount">Стартовая цена</span>
                                 <span class="lot__cost"><b><?= cost($value['cost_start']); ?>&#8381;</b></span>
                             </div>
-                            <?php $time_limited = count_time($value['expiration_time']); ?>
+                            <?php $time_limited = countTime($value['expiration_time']); ?>
                             <?php if ($time_limited[0] <= 0): ?>
                             <div class="lot__timer timer timer--finishing">
                                 <?php else: ?>

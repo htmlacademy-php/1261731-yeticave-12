@@ -1,5 +1,5 @@
 <?php
-function include_template($path, array $data = [])
+function includeTemplate($path, array $data = [])
 {
     $path = 'templates/' . $path;
     $page = '';

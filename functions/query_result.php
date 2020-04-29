@@ -1,6 +1,6 @@
 <?php
 
-function query_result($db_connection, $query) {
+function queryResult($db_connection, $query) {
 
     $query = mysqli_query($db_connection, $query);
 
