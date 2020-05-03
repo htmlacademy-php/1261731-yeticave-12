@@ -60,3 +60,17 @@ function validateLotStep($name) {
     }
 }
 
+function validateFormatEmail ($name, $array_email_from_bd) {
+    $name = $_POST[$name];
+
+    foreach($array_email_from_bd as $key) {
+        foreach($key as $value) {
+            if($value == $name) {
+                return "Email уже занят";
+            }
+        }
+    }
+
+}
+
+
