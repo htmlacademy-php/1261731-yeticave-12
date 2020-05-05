@@ -1,7 +1,8 @@
 <?php
 require_once('constants.php');
 
-function compareDates(string $date) {
+function compareDates(string $date)
+{
     $current_date = date(DATE);
     $format_to_check = DATE;
 
@@ -13,7 +14,8 @@ function compareDates(string $date) {
     }
 }
 
-function isEmpty($required_fields) {
+function isEmpty($required_fields)
+{
     $errors = [];
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
@@ -23,7 +25,8 @@ function isEmpty($required_fields) {
     return $errors = array_filter($errors);
 }
 
-function validateCategory($name) {
+function validateCategory($name)
+{
     if ($_POST[$name] === 'Выберите категорию') {
         return "Не выбрана категория";
     }
@@ -46,13 +49,15 @@ function validateFiles($name)
     }
 }
 
-function validateLotRate($name) {
+function validateLotRate($name)
+{
     if ($_POST[$name] <= 0) {
         return "Введите число больше ноля";
     }
 }
 
-function validateLotStep($name) {
+function validateLotStep($name)
+{
     $name = $_POST[$name];
     $point = '.';
     if (!is_numeric($name) || strpos($name, $point) || $name <= 0) {
@@ -60,15 +65,15 @@ function validateLotStep($name) {
     }
 }
 
-function validateFormatEmail ($name, $array_email_from_bd) {
+function validateFormatEmail($name)
+{
     $name = $_POST[$name];
+    $items = queryResult(
+        connectToDatabase(),
+        "SELECT email FROM Users WHERE email LIKE '" . $name . "'");
 
-    foreach($array_email_from_bd as $key) {
-        foreach($key as $value) {
-            if($value == $name) {
-                return "Email уже занят";
-            }
-        }
+    if (!empty($items)) {
+        return "Email уже занят";
     }
 
 }

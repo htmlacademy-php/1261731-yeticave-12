@@ -4,21 +4,11 @@ $user_name = 'Igor'; // укажите здесь ваше имя
 $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 
 
-require_once('functions/connect_to_db.php');
-require_once('functions/query_result.php');
-require_once('functions/cost.php');
-require_once('functions/include_template.php');
-require_once('functions/count_time.php');
-require_once('functions/get_post_val.php');
-require_once('functions/validation.php');
-require_once('functions/load_files.php');
-
-
+require_once('functions/config.php');
 
 $db_connection = connectToDatabase();
 
-$sql_categories = "SELECT id, name, symbol_code FROM Categories ORDER BY id ASC";
-$categories = queryResult($db_connection, $sql_categories);
+$categories = getCategories();
 
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) {
