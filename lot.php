@@ -4,16 +4,12 @@ $user_name = 'Igor'; // укажите здесь ваше имя
 $id = $_GET['id'];
 
 
-require_once('functions/connect_to_db.php');
-require_once('functions/query_result.php');
-require_once('functions/cost.php');
-require_once('functions/include_template.php');
-require_once('functions/count_time.php');
+require_once('functions/config.php');
 
 $db_connection = connectToDatabase();
 
-$sql_categories = "SELECT name, symbol_code FROM Categories ORDER BY id ASC";
-$categories = queryResult($db_connection, $sql_categories);
+$categories = getCategories();
+
 $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
     INNER JOIN Categories ON Lots.category_id=Categories.id 
     LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id='$id'";
