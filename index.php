@@ -1,7 +1,9 @@
 <?php
+session_start();
+
 $title = "Главная";
 $is_auth = rand(0, 1);
-$user_name = 'Igor'; // укажите здесь ваше имя
+$user_name = $_SESSION['user']; // укажите здесь ваше имя
 
 require_once('functions/connect_to_db.php');
 require_once('functions/query_result.php');

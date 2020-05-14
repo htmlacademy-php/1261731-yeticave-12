@@ -78,4 +78,25 @@ function validateFormatEmail($name)
 
 }
 
+function checkUser($email, $password)
+{
+    $errors = [];
+    $email = $_POST[$email];
+
+
+    $sql_hash = "SELECT password FROM Users WHERE email='$email'";
+    $hash_from_db = queryResult(connectToDatabase(), $sql_hash);
+    $hash_from_db = $hash_from_db[0][$password];
+
+    if (empty($hash_from_db)) {
+        $errors['email'] = "Email не верен";
+    }
+
+    if (!password_verify($_POST[$password], $hash_from_db)) {
+        $errors['password'] = "Не корректный пароль";
+    }
+
+    return $errors;
+}
+
 

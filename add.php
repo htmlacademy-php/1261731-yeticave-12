@@ -1,6 +1,12 @@
 <?php
-$is_auth = rand(0, 1);
-$user_name = 'Igor'; // укажите здесь ваше имя
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    exit();
+}
+
+$user_name = $_SESSION['user']; // укажите здесь ваше имя
 $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 
 
@@ -40,7 +46,7 @@ if (isset($_POST['submit'])) {
 if (!isset($errors) && isset($_POST['lot-name'])) {
     $file_name = $_FILES['avatar']['name'];
 
-    $user_id = 1;
+    $user_id = $_SESSION['user_id'];
     $category_id = $_POST['category'];
     $name = $_POST['lot-name'];
     $detail = $_POST['message'];
