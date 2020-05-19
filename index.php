@@ -2,7 +2,7 @@
 session_start();
 
 $title = "Главная";
-$is_auth = rand(0, 1);
+
 $user_name = $_SESSION['user']; // укажите здесь ваше имя
 
 require_once('functions/connect_to_db.php');
@@ -31,7 +31,6 @@ $layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
     'title' => $title,
-    'is_auth' => $is_auth,
     'user_name' => $user_name,
     'categories' => $categories
 ]);

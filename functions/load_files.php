@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @param $name
+ */
+
 function loadFiles($name)
 {
 

@@ -1,6 +1,11 @@
 <?php
 require_once('constants.php');
 
+/**
+ * @param string $date
+ * @return string
+ */
+
 function compareDates(string $date)
 {
     $current_date = date(DATE);
@@ -14,6 +19,12 @@ function compareDates(string $date)
     }
 }
 
+
+/**
+ * @param $required_fields
+ * @return array
+ */
+
 function isEmpty($required_fields)
 {
     $errors = [];
@@ -25,12 +36,23 @@ function isEmpty($required_fields)
     return $errors = array_filter($errors);
 }
 
+
+/**
+ * @param $name
+ * @return string
+ */
+
 function validateCategory($name)
 {
     if ($_POST[$name] === 'Выберите категорию') {
         return "Не выбрана категория";
     }
 }
+
+/**
+ * @param $name
+ * @return string
+ */
 
 function validateFiles($name)
 {
@@ -49,12 +71,22 @@ function validateFiles($name)
     }
 }
 
+/**
+ * @param $name
+ * @return string
+ */
+
 function validateLotRate($name)
 {
     if ($_POST[$name] <= 0) {
         return "Введите число больше ноля";
     }
 }
+
+/**
+ * @param $name
+ * @return string
+ */
 
 function validateLotStep($name)
 {
@@ -64,6 +96,11 @@ function validateLotStep($name)
         return "Введите цело положительное чило";
     }
 }
+
+/**
+ * @param $name
+ * @return string
+ */
 
 function validateFormatEmail($name)
 {
@@ -77,6 +114,12 @@ function validateFormatEmail($name)
     }
 
 }
+
+/**
+ * @param $email
+ * @param $password
+ * @return array
+ */
 
 function checkUser($email, $password)
 {

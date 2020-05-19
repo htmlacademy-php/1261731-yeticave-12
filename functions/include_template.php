@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * @param $path
+ * @param array $data
+ * @return false|string
+ */
+
 function includeTemplate($path, array $data = [])
 {
     $path = 'templates/' . $path;

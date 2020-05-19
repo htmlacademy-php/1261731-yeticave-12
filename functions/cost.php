@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * @param $cost
+ * @return string
+ */
+
 function cost($cost)
 {
     $cost = ceil($cost);
