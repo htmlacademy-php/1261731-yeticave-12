@@ -1,6 +1,7 @@
 <?php
-$is_auth = rand(0, 1);
-$user_name = 'Igor'; // укажите здесь ваше имя
+session_start();
+
+$user_name = $_SESSION['user']; // укажите здесь ваше имя
 $id = $_GET['id'];
 
 
@@ -21,9 +22,24 @@ $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 
 if (!isset($id) || empty($item_lot)) {
     $page_content = includeTemplate('main_404.php', ['menu_lot' => $menu_lot]);
-}
-else {
-    $page_content = includeTemplate('main_lot.php', ['menu_lot' => $menu_lot, 'item_lot' => $item_lot, 'time_limited' => $time_limited]);
+} else {
+    if (isset($_SESSION['user'])) {
+        $from_lot = includeTemplate('from_lot.php');
+        $page_content = includeTemplate('main_lot.php', [
+            'menu_lot' => $menu_lot,
+            'item_lot' => $item_lot,
+            'time_limited' => $time_limited,
+            'form_lot' => $from_lot
+        ]);
+    } else {
+        $page_content = includeTemplate(
+            'main_lot.php',
+            [
+                'menu_lot' => $menu_lot,
+                'item_lot' => $item_lot,
+                'time_limited' => $time_limited
+            ]);
+    }
 }
 $head = includeTemplate('head_lot_index.php');
 $layout_content = includeTemplate('layout.php', [

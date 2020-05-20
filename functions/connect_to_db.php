@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @return false|mysqli
+ */
+
 function connectToDatabase()
 {
     $db_connection = mysqli_connect("localhost", "Igor", "123", "YetiCave");

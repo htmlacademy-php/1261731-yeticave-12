@@ -14,25 +14,25 @@
         <div class="lot-item__right">
             <div class="lot-item__state">
                 <?php if ($time_limited[0] <= 0): ?>
-                <div class="lot__timer timer timer--finishing">
+                <div class="lot__timer timer--finishing">
                     <?php else: ?>
                     <div class="lot__timer timer">
                         <?php endif; ?>
                         <?= $time_limited[0]; ?> : <?= $time_limited[1]; ?>
                     </div>
-                </div>
-                <div class="lot-item__cost-state">
-                    <div class="lot-item__rate">
-                        <span class="lot-item__amount">Текущая цена</span>
-                        <span class="lot-item__cost"><?= $item_lot[0]['cost']; ?></span>
+
+                    <div class="lot-item__cost-state">
+                        <div class="lot-item__rate">
+                            <span class="lot-item__amount">Текущая цена</span>
+                            <span class="lot-item__cost"><?= $item_lot[0]['cost']; ?></span>
+                        </div>
+                        <div class="lot-item__min-cost">
+                            Мин. ставка <span><?= $item_lot[0]['step_cost']; ?></span>
+                        </div>
                     </div>
-                    <div class="lot-item__min-cost">
-                        Мин. ставка <span><?= $item_lot[0]['step_cost']; ?></span>
-                    </div>
+                    <?= $form_lot; ?>
                 </div>
-                <?= $form_lot; ?>
+                <?= $rate_history; ?>
             </div>
-            <?= $rate_history; ?>
         </div>
-    </div>
 </section>

@@ -1,5 +1,12 @@
 <?php
 
+
+/**
+ * @param $db_connection
+ * @param $query
+ * @return array|null
+ */
+
 function queryResult($db_connection, $query) {
 
     $query = mysqli_query($db_connection, $query);

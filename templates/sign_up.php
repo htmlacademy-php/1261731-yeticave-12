@@ -3,7 +3,7 @@
         <?= $menu_lot; ?>
     </nav>
     <?php $classform = isset($errors) ? "form--invalid" : ""; ?>
-    <form class="form container form--invalid <?=$classform;?>" action="signup.php" method="post" autocomplete="off"> <!-- form
+    <form class="form container <?=$classform;?>" action="signup.php" method="post" autocomplete="off"> <!-- form
     --invalid -->
         <h2>Регистрация нового аккаунта</h2>
         <?php $classname = isset($errors['email']) ? "form__item--invalid" : ""; ?>

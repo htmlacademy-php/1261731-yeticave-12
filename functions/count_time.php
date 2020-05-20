@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * @param $expiration_date
+ * @return array
+ */
+
 function countTime($expiration_date)
 {
     $current_date = date('Y-m-d H:i');
