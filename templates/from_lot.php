@@ -4,5 +4,5 @@
         <input id="cost" type="text" name="cost" placeholder="12 000">
         <span class="form__error">Введите наименование лота</span>
     </p>
-    <button type="submit" class="button">Сделать ставку</button>
+    <button type="submit" class="button" value="1">Сделать ставку</button>
 </form>
