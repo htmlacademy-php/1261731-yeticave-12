@@ -8,13 +8,7 @@ $categories = getCategories();
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $result_search = [];
 
-if (isset($_GET['find'])) {
-    $query_for_search = trim($_GET['search']);
-    if (!empty($query_for_search)) {
-        $result_search = searchLots($query_for_search);
-    }
-}
-
+$result_search = searchLots();
 
 
 $head = includeTemplate('head_lot_index.php', ['title' => $title]);

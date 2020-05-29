@@ -35,7 +35,26 @@ function getLots()
 }
 
 
-function searchLots($query_from_user)
+function searchLots()
 {
-    return  queryResult(connectToDatabase(),"SELECT * FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_from_user')");
+    if (isset($_GET['find'])) {
+        $query_for_search = trim($_GET['search']);
+        if (!empty($query_for_search)) {
+            return queryResult(connectToDatabase(),"SELECT
+Categories.name, 
+Lots.id, 
+category_id, 
+winner_id, 
+user_id, 
+Lots.name AS lot_name, 
+detail, 
+cost_start,
+step_cost,
+photo,
+date_create,
+date_finished
+FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
+        }
+    }
 }
