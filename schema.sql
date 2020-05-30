@@ -45,5 +45,6 @@ CREATE TABLE Lots (
 CREATE INDEX name_idx ON Lots (name);
 ALTER TABLE Rates ADD FOREIGN KEY (user_id) REFERENCES Users (id);
 ALTER TABLE Rates ADD FOREIGN KEY (lot_id) REFERENCES Lots (id);
+CREATE FULLTEXT INDEX lots_search ON Lots(name, detail);
 
 
