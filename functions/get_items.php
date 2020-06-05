@@ -58,3 +58,29 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
         }
     }
 }
+
+function getLot($id)
+{
+    $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
+    INNER JOIN Categories ON Lots.category_id=Categories.id 
+    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id='$id'";
+
+    return $sql_get_lot;
+}
+
+function getPage404($menu_lot, $id, $item_lot)
+{
+    if (empty($id) || empty($item_lot[0])) {
+        return includeTemplate('main_404.php', ['menu_lot' => $menu_lot]);
+    }
+}
+
+function getCostFromRates($id)
+{
+    $sql_cost = "SELECT l.id, name, cost_start, step_cost, cost FROM Lots l 
+                 LEFT JOIN Rates ON lot_id=l.id 
+                 WHERE l.id='$id' 
+                 ORDER BY cost DESC LIMIT 1";
+
+    return queryResult(connectToDatabase(), $sql_cost);
+}

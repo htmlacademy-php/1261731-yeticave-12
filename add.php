@@ -37,31 +37,15 @@ if (isset($_POST['submit'])) {
                 $errors['avatar'] = $rules['avatar'];
             }
         }
-
     }
-
 }
-
 
 if (!isset($errors) && isset($_POST['lot-name'])) {
     $file_name = $_FILES['avatar']['name'];
 
-    $user_id = $_SESSION['user_id'];
-    $category_id = $_POST['category'];
-    $name = $_POST['lot-name'];
-    $detail = $_POST['message'];
-    $cost_start = $_POST['lot-rate'];
-    $step_cost = $_POST['lot-step'];
-    $photo = "uploads/" . $file_name;
-    $date_create = date('Y-m-d');
-    $date_finished = $_POST['lot-date'];
+    $photo = "/uploads/" . $file_name;
 
-    $sql_add_lot = "INSERT INTO Lots (user_id, category_id, name, detail, cost_start, step_cost, photo, date_create, date_finished)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $add_new_lot = mysqli_prepare($db_connection, $sql_add_lot);
-    mysqli_stmt_bind_param($add_new_lot, 'iissiisss', $user_id, $category_id, $name, $detail, $cost_start, $step_cost,
-        $photo, $date_create, $date_finished);
-    mysqli_stmt_execute($add_new_lot);
+    addLot($photo, $db_connection);
 
     $sql_lot_id = "SELECT id FROM Lots ORDER BY id DESC LIMIT 1";
     $id_last_lot = queryResult($db_connection, $sql_lot_id);
