@@ -5,6 +5,7 @@ require_once('functions/config.php');
 
 $user_name = $_SESSION['user']; // укажите здесь ваше имя
 $id = $_GET['id'];
+$required_fields = ['cost'];
 
 $db_connection = connectToDatabase();
 
@@ -16,6 +17,9 @@ $title = $item_lot[0]['name'];
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 
 $page_content = getPage404($menu_lot, $id, $item_lot);
+
+
+
 
 if(empty($page_content)) {
     $page_content = includeTemplate('main_lot.php', [

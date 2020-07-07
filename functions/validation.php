@@ -142,4 +142,31 @@ function checkUser($email, $password)
     return $errors;
 }
 
+function validateCost()
+{
+
+}
+
+function checkCostLot($required_fields)
+{
+    if (isset($_POST['submit'])) {
+        if (isEmpty($required_fields)) {
+            $errors = isEmpty($required_fields);
+        } else {
+            $rules = [
+                'cost' => validateCost('cost')
+            ];
+
+            foreach ($_POST as $key => $value) {
+                if (isset($rules[$key])) {
+                    $rule = $rules[$key];
+                    $errors[$key] = $rule;
+                }
+                if (isset($rules['avatar'])) {
+                    $errors['avatar'] = $rules['avatar'];
+                }
+            }
+        }
+    }
+}
 
