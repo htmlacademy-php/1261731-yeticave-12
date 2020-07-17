@@ -30,16 +30,16 @@
                             Мин. ставка <span><?= $item_lot[0]['step_cost']; ?></span>
                         </div>
                     </div>
-                <?php if(isset($_SESSION['user'])): ?>
-                    <form class="lot-item__form" action="/lot.php" method="post" autocomplete="off">
+                
+                    <form class="lot-item__form" action="/lot.php?id=<?= $_GET['id'] ?>" method="post" autocomplete="off">
                         <p class="lot-item__form-item form__item form__item--invalid">
                             <label for="cost">Ваша ставка</label>
                             <input id="cost" type="text" name="cost" placeholder="<?= $item_lot[0]['step_cost']; ?>">
-                            <span class="form__error"><?=$error_cost ?? ""; ?></span>
+                            <span class="form__error"><?=$errors['cost'] ?? ""; ?></span>
                         </p>
-                        <button type="submit" class="button" name="set_cost" value="1">Сделать ставку</button>
+                        <button type="submit" class="button" name="submit" value="1">Сделать ставку</button>
                     </form>
-                    <?php endif; ?>
+                    
                 </div>
                 <div class="history">
                     <h3>История ставок (<span>10</span>)</h3>

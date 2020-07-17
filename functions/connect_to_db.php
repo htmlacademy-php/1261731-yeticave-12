@@ -6,7 +6,7 @@
 
 function connectToDatabase()
 {
-    $db_connection = mysqli_connect("localhost", "Igor", "123", "YetiCave");
+    $db_connection = mysqli_connect("localhost", "root", "", "YetiCave");
     mysqli_set_charset($db_connection, "utf8");
 
     if ($db_connection == false) {

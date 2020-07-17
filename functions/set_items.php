@@ -21,20 +21,19 @@ function addLot($photo, $connect)
     mysqli_stmt_execute($add_new_lot);
 }
 
+//добавляет новую ставку в БД с привязкой к лоту
 function inputCost($id_lot, $connect)
 {
 
-    $user_id = $_SESSION['user_id'];
-    $lot_id = $id_lot;
+    $user_id = $_SESSION['user_id']; 
+    $lot_id = $id_lot; 
     $cost = $_POST['cost'];
     $date_create = date('Y-m-d');
 
     $sql_add_cost = "INSERT INTO Rates (user_id, lot_id, cost, date_create)
                     VALUES (?, ?, ?, ?)";
-    $add_new_lot = mysqli_prepare($connect, $sql_add_cost);
-    mysqli_stmt_bind_param($add_new_lot, 'iiis', $user_id, $lot_id, $cost, $date_create);
-    mysqli_stmt_execute($add_new_lot);
+    $add_new_cost = mysqli_prepare($connect, $sql_add_cost);
+    mysqli_stmt_bind_param($add_new_cost, 'iiis', $user_id, $lot_id, $cost, $date_create);
+    mysqli_stmt_execute($add_new_cost);
 
 }
-
-

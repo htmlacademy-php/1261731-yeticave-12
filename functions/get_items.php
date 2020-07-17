@@ -84,3 +84,30 @@ function getCostFromRates($id)
 
     return queryResult(connectToDatabase(), $sql_cost);
 }
+
+function getCurrentCost($id_lot) {
+    $sql_get_carrent_cost = "SELECT cost FROM rates 
+                             WHERE lot_id='$id_lot' 
+                             ORDER BY cost DESC LIMIT 1";
+    $get_cost = queryResult(connectToDatabase(), $sql_get_carrent_cost); 
+    if (empty($get_cost)) {
+        $sql_get_carrent_cost = "SELECT cost_start FROM lots 
+                                 WHERE id='$id_lot'";
+
+    }
+
+    return queryResult(connectToDatabase(), $sql_get_carrent_cost);
+}
+
+function getStepCostLots($id_lot) {
+    $sql_get_step_cost = "SELECT step_cost FROM lots WHERE id='$id_lot'";
+    return queryResult(connectToDatabase(), $sql_get_step_cost);
+}
+
+function getMyRates($user_id) {
+   $sql_get_my_rates = "SELECT name FROM lots 
+                        WHERE id=(SELECT lot_id FROM rates 
+                                  WHERE user_id='$user_id' 
+                                  ORDER BY cost DESC LIMIT 1)";
+
+}
