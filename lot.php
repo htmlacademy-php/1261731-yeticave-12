@@ -7,7 +7,7 @@ require_once('functions/config.php');
 $db_connection = connectToDatabase();
 
 //подготовка переменных для шаблона
-$user_name = $_SESSION['user']; 
+$user_name = $_SESSION['user'];
 $id = $_GET['id'];
 $required_fields = ['cost'];
 $categories = getCategories();
@@ -19,9 +19,9 @@ $page_content = getPage404($menu_lot, $id, $item_lot);
 
 //проверка формы
 if (isset($_SESSION['user'])) {
-    if (isset($_POST['submit'])) { 
-        if (isEmpty($required_fields)) { 
-            $errors = isEmpty($required_fields); // если поле не заполнено присваивает массив [название поля => суть ошибки]         
+    if (isset($_POST['submit'])) {
+        if (isEmpty($required_fields)) {
+            $errors = isEmpty($required_fields); // если поле не заполнено присваивает массив [название поля => суть ошибки]
         } else {
                 $rules = ['cost' => validateCost($id, 'cost')]; //массив [название поля => суть ошибки]
 
@@ -32,8 +32,8 @@ if (isset($_SESSION['user'])) {
                     }
                 }
             }
-            
-        if (!isset($errors)) {             
+
+        if (!isset($errors) && isset($_POST['cost'])) {
             inputCost($id, $db_connection); //добавляем ставку
 
             }
@@ -57,7 +57,7 @@ if(empty($page_content)) {
         'content' => $page_content,
         'title' => $title,
         'user_name' => $user_name,
-        'categories' => $categories        
+        'categories' => $categories
     ]);
 
 
