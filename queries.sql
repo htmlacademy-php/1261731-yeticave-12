@@ -36,5 +36,9 @@ INSERT INTO Rates VALUES
     /*получить список ставок для лота по его идентификатору с сортировкой по дате.*/
     SELECT * FROM Rates WHERE lot_id=1 ORDER BY date_create ASC;
     /*вложенный запрос*/
-    SELECT name FROM lots WHERE id=(SELECT lot_id FROM rates WHERE user_id=2 ORDER BY cost DESC LIMIT 1);
-
+    SELECT name FROM lots 
+        WHERE id=(SELECT lot_id FROM rates WHERE user_id=2 ORDER BY cost DESC LIMIT 1);
+    SELECT lots.id, name, cost, rates.date_create FROM lots RIGHT JOIN rates ON lot_id=lots.id;
+    SELECT lots.id, rates.user_id, name, cost, rates.date_create FROM lots 
+    RIGHT JOIN rates ON lot_id=lots.id 
+    WHERE rates.user_id=7;

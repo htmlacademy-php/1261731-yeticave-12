@@ -105,9 +105,10 @@ function getStepCostLots($id_lot) {
 }
 
 function getMyRates($user_id) {
-   $sql_get_my_rates = "SELECT name FROM lots 
-                        WHERE id=(SELECT lot_id FROM rates 
-                                  WHERE user_id='$user_id' 
-                                  ORDER BY cost DESC LIMIT 1)";
-
+   $sql_get_my_rates = "SELECT lots.id, rates.user_id, name, cost, rates.date_create, photo 
+                        FROM lots 
+                        RIGHT JOIN rates ON lot_id=lots.id 
+                        WHERE rates.user_id='$user_id'";
+    return queryResult(connectToDatabase(), $sql_get_my_rates);  
+   
 }
