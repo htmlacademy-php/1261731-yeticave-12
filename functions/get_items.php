@@ -86,12 +86,12 @@ function getCostFromRates($id)
 }
 
 function getCurrentCost($id_lot) {
-    $sql_get_carrent_cost = "SELECT cost FROM rates 
+    $sql_get_carrent_cost = "SELECT cost FROM Rates 
                              WHERE lot_id='$id_lot' 
                              ORDER BY cost DESC LIMIT 1";
-    $get_cost = queryResult(connectToDatabase(), $sql_get_carrent_cost); 
+    $get_cost = queryResult(connectToDatabase(), $sql_get_carrent_cost);
     if (empty($get_cost)) {
-        $sql_get_carrent_cost = "SELECT cost_start FROM lots 
+        $sql_get_carrent_cost = "SELECT cost_start FROM Lots 
                                  WHERE id='$id_lot'";
 
     }
@@ -100,20 +100,20 @@ function getCurrentCost($id_lot) {
 }
 
 function getStepCostLots($id_lot) {
-    $sql_get_step_cost = "SELECT step_cost FROM lots WHERE id='$id_lot'";
+    $sql_get_step_cost = "SELECT step_cost FROM Lots WHERE id='$id_lot'";
     return queryResult(connectToDatabase(), $sql_get_step_cost);
 }
 
 function getMyRates($user_id) {
-   $sql_get_my_rates = "SELECT lots.id, rates.user_id, name, cost, rates.date_create, photo, winner_id 
-                        FROM lots 
-                        RIGHT JOIN rates ON lot_id=lots.id 
-                        WHERE rates.user_id='$user_id'";
-    return queryResult(connectToDatabase(), $sql_get_my_rates);  
-   
+   $sql_get_my_rates = "SELECT Lots.id, Rates.user_id, name, cost, Rates.date_create, photo, winner_id 
+                        FROM Lots 
+                        RIGHT JOIN Rates ON lot_id=Lots.id 
+                        WHERE Rates.user_id='$user_id'";
+    return queryResult(connectToDatabase(), $sql_get_my_rates);
+
 }
 
 function getUserContacts($user_id) {
-    $sql_get_user_contacts = "SELECT contact FROM users WHERE id='$user_id'";
-    return queryResult(connectToDatabase(), $sql_get_user_contacts);  
+    $sql_get_user_contacts = "SELECT contact FROM Users WHERE id='$user_id'";
+    return queryResult(connectToDatabase(), $sql_get_user_contacts);
 }
