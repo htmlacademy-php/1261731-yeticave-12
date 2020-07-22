@@ -105,10 +105,15 @@ function getStepCostLots($id_lot) {
 }
 
 function getMyRates($user_id) {
-   $sql_get_my_rates = "SELECT lots.id, rates.user_id, name, cost, rates.date_create, photo 
+   $sql_get_my_rates = "SELECT lots.id, rates.user_id, name, cost, rates.date_create, photo, winner_id 
                         FROM lots 
                         RIGHT JOIN rates ON lot_id=lots.id 
                         WHERE rates.user_id='$user_id'";
     return queryResult(connectToDatabase(), $sql_get_my_rates);  
    
+}
+
+function getUserContacts($user_id) {
+    $sql_get_user_contacts = "SELECT contact FROM users WHERE id='$user_id'";
+    return queryResult(connectToDatabase(), $sql_get_user_contacts);  
 }
