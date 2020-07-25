@@ -23,6 +23,10 @@ function compareDates(string $date)
 /**
  * @param $required_fields
  * @return array
+ * передаем массив с именами полей формы
+ * парсим его и проверяем POST элементы на заолненность
+ * если POST пуст то записываем в массив поле с заданным тестом
+ * возвращаем массив ошибок [название поля => суть ошибки]  
  */
 
 function isEmpty($required_fields)
@@ -142,4 +146,17 @@ function checkUser($email, $password)
     return $errors;
 }
 
+function validateCost($id_lot, $cost)
+{
+    $last_cost_lot = getCurrentCost($id_lot); 
+    $step_cost_lot = getStepCostLots($id_lot); 
+    $control_cost = $last_cost_lot[0]['cost_start'] + $step_cost_lot[0]['step_cost'];
+    $cost_from_user = $_POST[$cost]; 
+    if($cost_from_user <= 0) {
+        $errors = "Не корректная цена";        
+    } elseif ($cost_from_user < $control_cost)  {
+        $errors = "Введена цена ниже текущей";
+    }
 
+    return $errors;
+}

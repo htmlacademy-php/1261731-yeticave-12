@@ -1,55 +1,64 @@
 <?php
 session_start();
 
-$user_name = $_SESSION['user']; // укажите здесь ваше имя
-$id = $_GET['id'];
-
-
 require_once('functions/config.php');
 
+//коннект к БД
 $db_connection = connectToDatabase();
 
+//подготовка переменных для шаблона
+$user_name = $_SESSION['user'];
+$id = $_GET['id'];
+$required_fields = ['cost'];
 $categories = getCategories();
-
-$sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
-    INNER JOIN Categories ON Lots.category_id=Categories.id 
-    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id='$id'";
-$item_lot = queryResult($db_connection, $sql_get_lot);
+$item_lot = queryResult($db_connection, getLot($id));
 $time_limited = countTime($item_lot[0]['expiration_time']);
 $title = $item_lot[0]['name'];
-
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
+$page_content = getPage404($menu_lot, $id, $item_lot);
 
-if (!isset($id) || empty($item_lot)) {
-    $page_content = includeTemplate('main_404.php', ['menu_lot' => $menu_lot]);
-} else {
-    if (isset($_SESSION['user'])) {
-        $from_lot = includeTemplate('from_lot.php');
-        $page_content = includeTemplate('main_lot.php', [
-            'menu_lot' => $menu_lot,
-            'item_lot' => $item_lot,
-            'time_limited' => $time_limited,
-            'form_lot' => $from_lot
-        ]);
-    } else {
-        $page_content = includeTemplate(
-            'main_lot.php',
-            [
-                'menu_lot' => $menu_lot,
-                'item_lot' => $item_lot,
-                'time_limited' => $time_limited
-            ]);
+//проверка формы
+if (isset($_SESSION['user'])) {
+    if (isset($_POST['submit'])) {
+        if (isEmpty($required_fields)) {
+            $errors = isEmpty($required_fields); // если поле не заполнено присваивает массив [название поля => суть ошибки]
+        } else {
+                $rules = ['cost' => validateCost($id, 'cost')]; //массив [название поля => суть ошибки]
+
+                foreach ($_POST as $key => $value) {
+                    if (isset($rules[$key])) {
+                        $rule = $rules[$key];
+                        $errors[$key] = $rule; //пишем массив с ошибками
+                    }
+                }
+            }
+
+        if (!isset($errors) && isset($_POST['cost'])) {
+            inputCost($id, $db_connection); //добавляем ставку
+
+            }
     }
 }
-$head = includeTemplate('head_lot_index.php');
-$layout_content = includeTemplate('layout.php', [
-    'head' => $head,
-    'content' => $page_content,
-    'title' => $title,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
-    'categories' => $categories
-]);
+
+//если не 404, то формируем контент страницы
+if(empty($page_content)) {
+    $page_content = includeTemplate('main_lot.php', [
+        'menu_lot' => $menu_lot,
+        'item_lot' => $item_lot,
+        'time_limited' => $time_limited,
+        'errors' => $errors
+    ]);
+}
+
+//сборка шаблона
+    $head = includeTemplate('head_lot_index.php');
+    $layout_content = includeTemplate('layout.php', [
+        'head' => $head,
+        'content' => $page_content,
+        'title' => $title,
+        'user_name' => $user_name,
+        'categories' => $categories
+    ]);
 
 
 print($layout_content);

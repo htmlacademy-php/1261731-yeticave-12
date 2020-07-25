@@ -1,24 +1,28 @@
 <?php
 session_start();
 
+require_once('functions/config.php');
+
+$db_connection = connectToDatabase();
+
+//проверка на залогининость юзера
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
     exit();
 }
 
-$user_name = $_SESSION['user']; // укажите здесь ваше имя
-$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
-
-
-require_once('functions/config.php');
-
-$db_connection = connectToDatabase();
-
+$user_name = $_SESSION['user']; 
+$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date']; // для передачи в метод isEmpty
 $categories = getCategories();
 
+/*проверка формы. 
+1if проверка отправлена ли форма
+2if передаем массив с именами полей формы для проверки на заполнение в метод isEmpty
+else проверяем значения полей формы если значение поля неверное то пишем массив ошибок
+*/
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) {
-        $errors = isEmpty($required_fields);
+        $errors = isEmpty($required_fields); //если поле не заполнено присваивает массив [название поля => суть ошибки]
     } else {
         $rules = [
             'lot-rate' => validateLotRate('lot-rate'),
@@ -26,42 +30,27 @@ if (isset($_POST['submit'])) {
             'lot-step' => validateLotStep('lot-step'),
             'category' => validateCategory('category'),
             'lot-date' => compareDates('lot-date')
-        ];
+        ]; //массив [название поля => суть ошибки]
 
         foreach ($_POST as $key => $value) {
             if (isset($rules[$key])) {
                 $rule = $rules[$key];
-                $errors[$key] = $rule;
+                $errors[$key] = $rule; //пишем массив с ошибками
             }
             if (isset($rules['avatar'])) {
                 $errors['avatar'] = $rules['avatar'];
             }
         }
-
     }
-
 }
 
-
+//если ошибок нет в форме
 if (!isset($errors) && isset($_POST['lot-name'])) {
     $file_name = $_FILES['avatar']['name'];
 
-    $user_id = $_SESSION['user_id'];
-    $category_id = $_POST['category'];
-    $name = $_POST['lot-name'];
-    $detail = $_POST['message'];
-    $cost_start = $_POST['lot-rate'];
-    $step_cost = $_POST['lot-step'];
-    $photo = "uploads/" . $file_name;
-    $date_create = date('Y-m-d');
-    $date_finished = $_POST['lot-date'];
+    $photo = "/uploads/" . $file_name;
 
-    $sql_add_lot = "INSERT INTO Lots (user_id, category_id, name, detail, cost_start, step_cost, photo, date_create, date_finished)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $add_new_lot = mysqli_prepare($db_connection, $sql_add_lot);
-    mysqli_stmt_bind_param($add_new_lot, 'iissiisss', $user_id, $category_id, $name, $detail, $cost_start, $step_cost,
-        $photo, $date_create, $date_finished);
-    mysqli_stmt_execute($add_new_lot);
+    addLot($photo, $db_connection);
 
     $sql_lot_id = "SELECT id FROM Lots ORDER BY id DESC LIMIT 1";
     $id_last_lot = queryResult($db_connection, $sql_lot_id);
@@ -72,6 +61,7 @@ if (!isset($errors) && isset($_POST['lot-name'])) {
     header("Location:lot.php?id=$id_last_lot");
 }
 
+//сборка шаблона
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = includeTemplate('add_lot.php',
     ['menu_lot' => $menu_lot, 'categories' => $categories, 'errors' => $errors]);

@@ -58,3 +58,62 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
         }
     }
 }
+
+function getLot($id)
+{
+    $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
+    INNER JOIN Categories ON Lots.category_id=Categories.id 
+    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id='$id'";
+
+    return $sql_get_lot;
+}
+
+function getPage404($menu_lot, $id, $item_lot)
+{
+    if (empty($id) || empty($item_lot[0])) {
+        return includeTemplate('main_404.php', ['menu_lot' => $menu_lot]);
+    }
+}
+
+function getCostFromRates($id)
+{
+    $sql_cost = "SELECT l.id, name, cost_start, step_cost, cost FROM Lots l 
+                 LEFT JOIN Rates ON lot_id=l.id 
+                 WHERE l.id='$id' 
+                 ORDER BY cost DESC LIMIT 1";
+
+    return queryResult(connectToDatabase(), $sql_cost);
+}
+
+function getCurrentCost($id_lot) {
+    $sql_get_carrent_cost = "SELECT cost FROM Rates 
+                             WHERE lot_id='$id_lot' 
+                             ORDER BY cost DESC LIMIT 1";
+    $get_cost = queryResult(connectToDatabase(), $sql_get_carrent_cost);
+    if (empty($get_cost)) {
+        $sql_get_carrent_cost = "SELECT cost_start FROM Lots 
+                                 WHERE id='$id_lot'";
+
+    }
+
+    return queryResult(connectToDatabase(), $sql_get_carrent_cost);
+}
+
+function getStepCostLots($id_lot) {
+    $sql_get_step_cost = "SELECT step_cost FROM Lots WHERE id='$id_lot'";
+    return queryResult(connectToDatabase(), $sql_get_step_cost);
+}
+
+function getMyRates($user_id) {
+   $sql_get_my_rates = "SELECT Lots.id, Rates.user_id, name, cost, Rates.date_create, photo, winner_id 
+                        FROM Lots 
+                        RIGHT JOIN Rates ON lot_id=Lots.id 
+                        WHERE Rates.user_id='$user_id'";
+    return queryResult(connectToDatabase(), $sql_get_my_rates);
+
+}
+
+function getUserContacts($user_id) {
+    $sql_get_user_contacts = "SELECT contact FROM Users WHERE id='$user_id'";
+    return queryResult(connectToDatabase(), $sql_get_user_contacts);
+}
