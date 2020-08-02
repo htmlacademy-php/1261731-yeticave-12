@@ -37,3 +37,9 @@ function inputCost($id_lot, $connect)
     mysqli_stmt_execute($add_new_cost);
 
 }
+
+function inputUseridInLotsTable($userid, $lotid) {
+    $sql_update_winnerid = "UPDATE lots SET winner_id='$userid' WHERE id='$lotid'";
+    mysqli_query(connectToDatabase(), $sql_update_winnerid);
+    
+}

@@ -11,3 +11,4 @@ require_once('functions/count_time.php');
 require_once('functions/get_items.php');
 require_once('functions/load_files.php');
 require_once('functions/set_items.php');
+require_once('functions/send_email.php');
