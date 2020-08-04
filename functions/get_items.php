@@ -59,7 +59,7 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
     }
 }
 
-function getLot($id)
+function getLotQuery($id)
 {
     $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
     INNER JOIN Categories ON Lots.category_id=Categories.id 
@@ -91,8 +91,7 @@ function getCurrentCost($id_lot) {
                              ORDER BY cost DESC LIMIT 1";
     $get_cost = queryResult(connectToDatabase(), $sql_get_carrent_cost);
     if (empty($get_cost)) {
-        $sql_get_carrent_cost = "SELECT cost_start FROM Lots 
-                                 WHERE id='$id_lot'";
+        $sql_get_carrent_cost = "SELECT cost_start FROM Lots WHERE id='$id_lot'";
 
     }
 

@@ -3,18 +3,15 @@ session_start();
 
 require_once('functions/config.php');
 
-//коннект к БД
 $db_connection = connectToDatabase();
 
-//подготовка переменных для шаблона
 $title = "Мои ставки";
 $user_name = $_SESSION['user'];
 $user_id = $_SESSION['user_id'];
 $categories = getCategories();
-$user_contacts = getUserContacts($user_id); // метод получения контактов юзера
-$my_rates = getMyRates($user_id);  // метод получения массива ставок
+$user_contacts = getUserContacts($user_id); 
+$my_rates = getMyRates($user_id); 
 
-//сборка шаблона
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]); 
 $page_content = includeTemplate('myrates_tmp.php', [
     'menu_lot' => $menu_lot, 

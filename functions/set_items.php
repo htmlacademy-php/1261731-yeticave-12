@@ -21,7 +21,9 @@ function addLot($photo, $connect)
     mysqli_stmt_execute($add_new_lot);
 }
 
-//добавляет новую ставку в БД с привязкой к лоту
+/**
+ * добавляет новую ставку в БД с привязкой к лоту
+ */
 function inputCost($id_lot, $connect)
 {
 
