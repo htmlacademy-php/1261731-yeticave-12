@@ -21,7 +21,9 @@ function addLot($photo, $connect)
     mysqli_stmt_execute($add_new_lot);
 }
 
-//добавляет новую ставку в БД с привязкой к лоту
+/**
+ * добавляет новую ставку в БД с привязкой к лоту
+ */
 function inputCost($id_lot, $connect)
 {
 
@@ -36,4 +38,10 @@ function inputCost($id_lot, $connect)
     mysqli_stmt_bind_param($add_new_cost, 'iiis', $user_id, $lot_id, $cost, $date_create);
     mysqli_stmt_execute($add_new_cost);
 
+}
+
+function inputUseridInLotsTable($userid, $lotid) {
+    $sql_update_winnerid = "UPDATE lots SET winner_id='$userid' WHERE id='$lotid'";
+    mysqli_query(connectToDatabase(), $sql_update_winnerid);
+    
 }

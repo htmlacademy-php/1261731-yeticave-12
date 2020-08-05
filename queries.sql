@@ -42,3 +42,15 @@ INSERT INTO Rates VALUES
     SELECT lots.id, rates.user_id, name, cost, rates.date_create FROM lots 
     RIGHT JOIN rates ON lot_id=lots.id 
     WHERE rates.user_id=7;
+    /*запрос ставок по выигрывшим лотам */
+    SELECT * FROM rates WHERE lot_id IN 
+    (SELECT id FROM lots WHERE winner_id IS NULL AND date_finished<=CURRENT_TIMESTAMP);
+    
+    /*запрос ID лотов без победителей*/
+    SELECT id FROM lots WHERE winner_id IS NULL AND date_finished<=CURRENT_TIMESTAMP;
+    /*выбор последней ставки по лоту*/
+    SELECT * FROM Rates WHERE lot_id=1 ORDER BY cost DESC LIMIT 1;
+    /*обновление значения поля победителя в таблице лотов*/
+    UPDATE Lots SET winner_id=3 WHERE id=2;
+    /*выбор юзера по id*/
+    SELECT email, name FROM users WHERE id=1;

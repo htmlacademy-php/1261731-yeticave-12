@@ -5,7 +5,6 @@ require_once('constants.php');
  * @param string $date
  * @return string
  */
-
 function compareDates(string $date)
 {
     $current_date = date(DATE);
@@ -28,7 +27,6 @@ function compareDates(string $date)
  * если POST пуст то записываем в массив поле с заданным тестом
  * возвращаем массив ошибок [название поля => суть ошибки]  
  */
-
 function isEmpty($required_fields)
 {
     $errors = [];
@@ -45,7 +43,6 @@ function isEmpty($required_fields)
  * @param $name
  * @return string
  */
-
 function validateCategory($name)
 {
     if ($_POST[$name] === 'Выберите категорию') {
@@ -57,7 +54,6 @@ function validateCategory($name)
  * @param $name
  * @return string
  */
-
 function validateFiles($name)
 {
     if (!empty($_FILES[$name]['name'])) {
@@ -79,7 +75,6 @@ function validateFiles($name)
  * @param $name
  * @return string
  */
-
 function validateLotRate($name)
 {
     if ($_POST[$name] <= 0) {
@@ -91,7 +86,6 @@ function validateLotRate($name)
  * @param $name
  * @return string
  */
-
 function validateLotStep($name)
 {
     $name = $_POST[$name];
@@ -105,7 +99,6 @@ function validateLotStep($name)
  * @param $name
  * @return string
  */
-
 function validateFormatEmail($name)
 {
     $name = $_POST[$name];
@@ -124,7 +117,6 @@ function validateFormatEmail($name)
  * @param $password
  * @return array
  */
-
 function checkUser($email, $password)
 {
     $errors = [];

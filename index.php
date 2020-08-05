@@ -1,9 +1,10 @@
 <?php
 session_start();
+require_once('./getwinner.php');
 
 $title = "Главная";
 
-$user_name = $_SESSION['user']; // укажите здесь ваше имя
+$user_name = $_SESSION['user']; 
 
 require_once('functions/config.php');
 

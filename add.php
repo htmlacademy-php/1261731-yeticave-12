@@ -5,7 +5,7 @@ require_once('functions/config.php');
 
 $db_connection = connectToDatabase();
 
-//проверка на залогининость юзера
+
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
     exit();
@@ -15,14 +15,9 @@ $user_name = $_SESSION['user'];
 $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date']; // для передачи в метод isEmpty
 $categories = getCategories();
 
-/*проверка формы. 
-1if проверка отправлена ли форма
-2if передаем массив с именами полей формы для проверки на заполнение в метод isEmpty
-else проверяем значения полей формы если значение поля неверное то пишем массив ошибок
-*/
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) {
-        $errors = isEmpty($required_fields); //если поле не заполнено присваивает массив [название поля => суть ошибки]
+        $errors = isEmpty($required_fields); 
     } else {
         $rules = [
             'lot-rate' => validateLotRate('lot-rate'),
@@ -30,12 +25,12 @@ if (isset($_POST['submit'])) {
             'lot-step' => validateLotStep('lot-step'),
             'category' => validateCategory('category'),
             'lot-date' => compareDates('lot-date')
-        ]; //массив [название поля => суть ошибки]
+        ]; 
 
         foreach ($_POST as $key => $value) {
             if (isset($rules[$key])) {
                 $rule = $rules[$key];
-                $errors[$key] = $rule; //пишем массив с ошибками
+                $errors[$key] = $rule; 
             }
             if (isset($rules['avatar'])) {
                 $errors['avatar'] = $rules['avatar'];
@@ -44,7 +39,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-//если ошибок нет в форме
+
 if (!isset($errors) && isset($_POST['lot-name'])) {
     $file_name = $_FILES['avatar']['name'];
 
@@ -61,7 +56,7 @@ if (!isset($errors) && isset($_POST['lot-name'])) {
     header("Location:lot.php?id=$id_last_lot");
 }
 
-//сборка шаблона
+
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = includeTemplate('add_lot.php',
     ['menu_lot' => $menu_lot, 'categories' => $categories, 'errors' => $errors]);

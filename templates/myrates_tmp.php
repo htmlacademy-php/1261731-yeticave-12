@@ -23,7 +23,7 @@
           </td>
           <td class="rates__timer">
           <?= $value['date_create']; ?>
-                </div>
+                
           </td>
           <td class="rates__price">
             <?= $value['cost']; ?>
@@ -44,7 +44,7 @@
           </td>
           <td class="rates__timer">
           <?= $value['date_create']; ?>
-                </div>
+                
           </td>
           <td class="rates__price">
             <?= $value['cost']; ?>
