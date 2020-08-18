@@ -75,16 +75,6 @@ function getPage404($menu_lot, $id, $item_lot)
     }
 }
 
-function getCostFromRates($id)
-{
-    $sql_cost = "SELECT l.id, name, cost_start, step_cost, cost FROM Lots l 
-                 LEFT JOIN Rates ON lot_id=l.id 
-                 WHERE l.id='$id' 
-                 ORDER BY cost DESC LIMIT 1";
-
-    return queryResult(connectToDatabase(), $sql_cost);
-}
-
 function getCurrentCost($id_lot) {
     $sql_get_carrent_cost = "SELECT cost FROM Rates 
                              WHERE lot_id='$id_lot' 
@@ -118,7 +108,7 @@ function getUserContacts($user_id) {
 }
 
 function getIdWinnerLots() {
-    $sql_get_id_winner_lot = "SELECT id FROM lots 
+    $sql_get_id_winner_lot = "SELECT id FROM Lots 
                               WHERE winner_id 
                               IS NULL AND date_finished<=CURRENT_TIMESTAMP";
     $result = queryResult(connectToDatabase(), $sql_get_id_winner_lot);
@@ -126,7 +116,7 @@ function getIdWinnerLots() {
 }
 
 function getLastRateForWinnerLot($id_winner_lot) {
-    $sql_get_last_rate_for_winner_lot = "SELECT * FROM rates 
+    $sql_get_last_rate_for_winner_lot = "SELECT * FROM Rates 
                                          WHERE lot_id='$id_winner_lot' 
                                          ORDER BY cost DESC LIMIT 1";
     $result = queryResult(connectToDatabase(), $sql_get_last_rate_for_winner_lot);
@@ -134,14 +124,14 @@ function getLastRateForWinnerLot($id_winner_lot) {
 }
 
 function getUserInformation($userid) {
-    $sql_get_user_information = "SELECT name, email FROM users WHERE id='$userid'";
+    $sql_get_user_information = "SELECT name, email FROM Users WHERE id='$userid'";
     $result = queryResult(connectToDatabase(), $sql_get_user_information);
     return $result [0];
 }
 
 function getInfoLotForEmail($id)
 {
-    $sql_get_lot = "SELECT name FROM lots WHERE id='$id'";
+    $sql_get_lot = "SELECT name FROM Lots WHERE id='$id'";
     $result = queryResult(connectToDatabase(), $sql_get_lot);
     return $result [0];
 }
