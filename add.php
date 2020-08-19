@@ -11,13 +11,13 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-$user_name = $_SESSION['user']; 
+$user_name = $_SESSION['user'] ?? null;
 $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date']; // для передачи в метод isEmpty
 $categories = getCategories();
 
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) {
-        $errors = isEmpty($required_fields); 
+        $errors = isEmpty($required_fields);
     } else {
         $rules = [
             'lot-rate' => validateLotRate('lot-rate'),
@@ -25,12 +25,12 @@ if (isset($_POST['submit'])) {
             'lot-step' => validateLotStep('lot-step'),
             'category' => validateCategory('category'),
             'lot-date' => compareDates('lot-date')
-        ]; 
+        ];
 
         foreach ($_POST as $key => $value) {
             if (isset($rules[$key])) {
                 $rule = $rules[$key];
-                $errors[$key] = $rule; 
+                $errors[$key] = $rule;
             }
             if (isset($rules['avatar'])) {
                 $errors['avatar'] = $rules['avatar'];
@@ -65,7 +65,6 @@ $layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
     'title' => $title,
-    'is_auth' => $is_auth,
     'user_name' => $user_name,
     'categories' => $categories
 ]);

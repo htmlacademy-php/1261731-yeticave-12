@@ -4,7 +4,7 @@ require_once('./getwinner.php');
 
 $title = "Главная";
 
-$user_name = $_SESSION['user'];
+$user_name = $_SESSION['user'] ?? null;
 
 require_once('functions/config.php');
 

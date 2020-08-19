@@ -5,7 +5,7 @@ require_once('functions/config.php');
 
 $db_connection = connectToDatabase();
 
-$user_name = $_SESSION['user'];
+$user_name = $_SESSION['user'] ?? null;
 $id = $_GET['id'];
 $required_fields = ['cost'];
 $categories = getCategories();
@@ -15,7 +15,7 @@ $title = $item_lot[0]['name'];
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = getPage404($menu_lot, $id, $item_lot);
 
-if (isset($_SESSION['user']) && isset($_POST['submit'])) {    
+if (isset($_SESSION['user']) && isset($_POST['submit'])) {
         if (isEmpty($required_fields)) {
             $errors = isEmpty($required_fields);
         } else {
@@ -30,10 +30,10 @@ if (isset($_SESSION['user']) && isset($_POST['submit'])) {
             }
 
         if (!isset($errors) && isset($_POST['cost'])) {
-            inputCost($id, $db_connection); 
+            inputCost($id, $db_connection);
 
             }
-    
+
 }
 
 if(empty($page_content)) {

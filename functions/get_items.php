@@ -120,18 +120,18 @@ function getLastRateForWinnerLot($id_winner_lot) {
                                          WHERE lot_id='$id_winner_lot' 
                                          ORDER BY cost DESC LIMIT 1";
     $result = queryResult(connectToDatabase(), $sql_get_last_rate_for_winner_lot);
-    return $result [0];
+    return $result [0] ?? null;
 }
 
 function getUserInformation($userid) {
     $sql_get_user_information = "SELECT name, email FROM Users WHERE id='$userid'";
     $result = queryResult(connectToDatabase(), $sql_get_user_information);
-    return $result [0];
+    return $result [0] ?? null;
 }
 
 function getInfoLotForEmail($id)
 {
     $sql_get_lot = "SELECT name FROM Lots WHERE id='$id'";
     $result = queryResult(connectToDatabase(), $sql_get_lot);
-    return $result [0];
+    return $result [0] ?? null;
 }
