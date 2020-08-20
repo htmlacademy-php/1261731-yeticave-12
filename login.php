@@ -27,12 +27,12 @@ if (isset($_POST['submit'])) {
     }
 }
 
-if (!isset($errors) && isset($_POST['email'])) {
+if (empty($errors) && isset($_POST['email'])) {
     session_start();
 
     $user_info = getUserName($_POST['email']);
-    $_SESSION['user'] = $user_info[0]['name'];
-    $_SESSION['user_id'] = $user_info[0]['id'];
+    $_SESSION['user'] = $user_info[1];
+    $_SESSION['user_id'] = $user_info[0];
 
     header("Location:index.php");
 }

@@ -17,7 +17,18 @@ function getCategories()
 
 function getUserName($email)
 {
-     return queryResult(connectToDatabase(), "SELECT id, name FROM Users WHERE email='$email'");
+    $link = connectToDatabase();
+    $user_email = $email;
+    $sql_get_name_user = "SELECT id, name FROM Users WHERE email=?";
+    $stmt = mysqli_prepare($link, $sql_get_name_user);
+    mysqli_stmt_bind_param($stmt, 's',$user_email);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $user_id, $user_name);
+    mysqli_stmt_fetch($stmt);
+    $result[] = $user_id;
+    $result[] = $user_name;
+    mysqli_stmt_close($stmt);
+    return $result;
 }
 
 /**
@@ -61,16 +72,34 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
 
 function getLotQuery($id)
 {
+    $link = connectToDatabase();
+    $lot_id = $id;
     $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
     INNER JOIN Categories ON Lots.category_id=Categories.id 
-    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id='$id'";
+    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
+    $stmt = mysqli_prepare($link, $sql_get_lot);
+    mysqli_stmt_bind_param($stmt, 's',$lot_id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
+    mysqli_stmt_fetch($stmt);
+    $result["category"] = $category;
+    $result["lot_id"] = $lot_id;
+    $result["lot_name"] = $lot_name;
+    $result["cost_start"] = $cost_start;
+    $result["step_cost"] = $step_cost;
+    $result["detail"] = $detail;
+    $result["photo"] = $photo;
+    $result["cost"] = $cost;
+    $result["expiration_time"] = $expiration_time;
+    mysqli_stmt_close($stmt);
+    return $result;
 
-    return $sql_get_lot;
+
 }
 
 function getPage404($menu_lot, $id, $item_lot)
 {
-    if (empty($id) || empty($item_lot[0])) {
+    if (empty($id) || empty($item_lot)) {
         return includeTemplate('main_404.php', ['menu_lot' => $menu_lot]);
     }
 }
