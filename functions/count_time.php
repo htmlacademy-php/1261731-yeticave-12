@@ -1,11 +1,12 @@
 <?php
-
 /**
- * @param $expiration_date
- * @return array
+ * Вычисляет время до даты окончания торгов
+ * 
+ * @param $expiration_date дата окончания действия цены лота
+ * 
+ * @return array часы и минуты
  */
-
-function countTime($expiration_date)
+function countTime(string $expiration_date) array
 {
     $current_date = date('Y-m-d H:i');
 

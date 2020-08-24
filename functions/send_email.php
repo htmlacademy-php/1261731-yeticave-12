@@ -1,6 +1,16 @@
 <?php
 
-function sendEmailToUser($text_message, $mail_winner, $name_winner) {    
+/**
+ * Организация отправки письма победившему в торгах пользователю 
+ * 
+ * @param string $text_message
+ * @param string $mail_winner
+ * @param string $name_winner
+ * 
+ * @return
+ */
+function sendEmailToUser(string $text_message, string $mail_winner, string $name_winner) 
+{    
     $keksSmtpHost = 'phpdemo.ru';
     $keksSmtpPort = 25;
     $my_name_in_keks = 'keks@phpdemo.ru';

@@ -1,9 +1,9 @@
 <?php
-
 /**
- * @return false|mysqli
+ * Создает подключение к базе данных
+ * 
+ * @return false|mysqli Ресурс подключения
  */
-
 function connectToDatabase()
 {
     $db_connection = mysqli_connect("localhost", "Igor", "123", "YetiCave");
