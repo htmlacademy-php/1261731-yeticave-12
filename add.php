@@ -11,6 +11,7 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+$errors = [];
 $user_name = $_SESSION['user'] ?? null;
 $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date']; // для передачи в метод isEmpty
 $categories = getCategories();
@@ -64,7 +65,6 @@ $head = includeTemplate('head_add_lot.php');
 $layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
-    'title' => $title,
     'user_name' => $user_name,
     'categories' => $categories
 ]);

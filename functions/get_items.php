@@ -4,10 +4,10 @@
  * Получение из БД информации о катеогрии лота:
  * id;
  * название категории лота.
- * 
- * @return array|null 
+ *
+ * @return array|null
  */
-function getCategories() : array
+function getCategories()
 {
     return queryResult(connectToDatabase(), "SELECT id, name, symbol_code FROM Categories ORDER BY id ASC");
 }
@@ -17,12 +17,12 @@ function getCategories() : array
  * Получение из БД информации о пользователе на основании его email:
  * id;
  * имя пользователя.
- * 
+ *
  * @param string $email почта пользователя
- * 
- * @return array|null 
+ *
+ * @return array|null
  */
-function getUserName(string $email) : array
+function getUserName(string $email)
 {
     $link = connectToDatabase();
     $user_email = $email;
@@ -47,10 +47,10 @@ function getUserName(string $email) : array
  * начальная цена,
  * путь к фото лота,
  * дата окончания действия цуны
- * 
+ *
  * @return array|null
  */
-function getLots() : array
+function getLots()
 {
     $sql_lots = "SELECT Categories.name AS category, 
                         Lots.id, 
@@ -69,10 +69,10 @@ function getLots() : array
 /**
  * Поиск лотов по запросу пользователя
  * Реализация поисковой системы по каталогу лотов
- * 
+ *
  * @return array|null
  */
-function searchLots() : array
+function searchLots()
 {
     if (isset($_GET['find'])) {
         $query_for_search = trim($_GET['search']);
@@ -98,12 +98,12 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
 
 /**
  * Получение информации о лоте по его id
- * 
- * @param int $id 
- * 
+ *
+ * @param int $id
+ *
  * @return array|null
  */
-function getLotQuery(int $id): array
+function getLotQuery(int $id)
 {
     $link = connectToDatabase();
     $lot_id = $id;
@@ -129,12 +129,12 @@ function getLotQuery(int $id): array
 }
 
 /**
- * Формирование шаблона страницы 404 
- * 
+ * Формирование шаблона страницы 404
+ *
  * @param mixed|string $menu_lot
  * @param int $id
  * @param string $item_lot
- * 
+ *
  * @return mixed|string
  */
 function getPage404($menu_lot, int $id, $item_lot)
@@ -147,12 +147,12 @@ function getPage404($menu_lot, int $id, $item_lot)
 /**
  * Получение последней ставки лота по его id
  * Если ставок нет, то берется стартовая цена лота
- * 
+ *
  * @param int $id_lot
- * 
+ *
  * @return array
  */
-function getCurrentCost(int $id_lot) : array
+function getCurrentCost(int $id_lot)
 {
     $sql_get_carrent_cost = "SELECT cost FROM Rates 
                              WHERE lot_id='$id_lot' 
@@ -167,13 +167,13 @@ function getCurrentCost(int $id_lot) : array
 }
 
 /**
- * Получение минимального размера хода ставки по id лота 
- * 
+ * Получение минимального размера хода ставки по id лота
+ *
  * @param int $id_lot
- * 
+ *
  * @return array
  */
-function getStepCostLots(int $id_lot) : array
+function getStepCostLots(int $id_lot)
 {
     $sql_get_step_cost = "SELECT step_cost FROM Lots WHERE id='$id_lot'";
     return queryResult(connectToDatabase(), $sql_get_step_cost);
@@ -181,12 +181,12 @@ function getStepCostLots(int $id_lot) : array
 
 /**
  * Получение информации о ставках пользователя по id пользователя
- * 
+ *
  * @param int $user_id
- * 
+ *
  * @return array
  */
-function getMyRates(int $user_id) : array 
+function getMyRates(int $user_id)
 {
    $sql_get_my_rates = "SELECT Lots.id, 
                                Rates.user_id, 
@@ -204,12 +204,12 @@ function getMyRates(int $user_id) : array
 
 /**
  * Получение контактов пользователя по id пользователя
- * 
+ *
  * @param int $user_id
- * 
+ *
  * @return array
  */
-function getUserContacts(int $user_id) : array
+function getUserContacts(int $user_id)
 {
     $sql_get_user_contacts = "SELECT contact FROM Users WHERE id='$user_id'";
     return queryResult(connectToDatabase(), $sql_get_user_contacts);
@@ -218,10 +218,10 @@ function getUserContacts(int $user_id) : array
 /**
  * Получение id лота по где есть победивший пользователь и
  * время торгов истекло
- * 
+ *
  * @return array
  */
-function getIdWinnerLots() : array
+function getIdWinnerLots()
 {
     $sql_get_id_winner_lot = "SELECT id FROM Lots 
                               WHERE winner_id 
@@ -232,12 +232,12 @@ function getIdWinnerLots() : array
 
 /**
  * Получение последней ставки относщейся к победителю по торгам
- * 
+ *
  * @param int $id_winner_lot
- * 
+ *
  * @return array
  */
-function getLastRateForWinnerLot(int $id_winner_lot) : array
+function getLastRateForWinnerLot(int $id_winner_lot)
 {
     $sql_get_last_rate_for_winner_lot = "SELECT * FROM Rates 
                                          WHERE lot_id='$id_winner_lot' 
@@ -248,12 +248,12 @@ function getLastRateForWinnerLot(int $id_winner_lot) : array
 
 /**
  * Получение имени и почты пользователя по id пользователя
- * 
+ *
  * @param int $userid
- * 
+ *
  * @return array
  */
-function getUserInformation(int $userid) : array
+function getUserInformation(int $userid)
 {
     $sql_get_user_information = "SELECT name, email FROM Users WHERE id='$userid'";
     $result = queryResult(connectToDatabase(), $sql_get_user_information);
@@ -262,14 +262,40 @@ function getUserInformation(int $userid) : array
 
 /**
  * Получение имени лота по его id
- * 
+ *
  * @param int $id
- * 
+ *
  * @return array
  */
-function getInfoLotForEmail(int $id) : array
+function getInfoLotForEmail(int $id)
 {
     $sql_get_lot = "SELECT name FROM Lots WHERE id='$id'";
     $result = queryResult(connectToDatabase(), $sql_get_lot);
     return $result [0] ?? null;
 }
+
+function getCetegoryName(int $id_category)
+{
+    return queryResult(connectToDatabase(), "SELECT name FROM Categories WHERE id='$id_category'");
+
+}
+
+function listLotsByCategories(int $id_category)
+{
+            return queryResult(connectToDatabase(),"SELECT
+Categories.name, 
+Lots.id, 
+category_id, 
+winner_id, 
+user_id, 
+Lots.name AS lot_name, 
+detail, 
+cost_start,
+step_cost,
+photo,
+date_create,
+date_finished
+FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+WHERE Categories.id='$id_category'");
+        }
+
