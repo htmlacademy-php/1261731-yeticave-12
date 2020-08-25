@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Получение из БД информации о катеогрии лота:
+ * Получает из БД информацию о катеогрии лота:
  * id;
  * название категории лота.
  *
@@ -14,13 +14,14 @@ function getCategories()
 
 
 /**
- * Получение из БД информации о пользователе на основании его email:
- * id;
- * имя пользователя.
+ * Получает из БД информацию о пользователе на основании переданного email
  *
+ * Результат: [0=>id пользователя,
+ *             1=>имя пользователя
+ *            ]
  * @param string $email почта пользователя
  *
- * @return array|null
+ * @return array|null Массив с информацией о пользователе
  */
 function getUserName(string $email)
 {
@@ -274,12 +275,26 @@ function getInfoLotForEmail(int $id)
     return $result [0] ?? null;
 }
 
+/**
+ * Получение имени категории по ее id
+ *
+ * @param int $id_category
+ *
+ * @return array
+ */
 function getCetegoryName(int $id_category)
 {
     return queryResult(connectToDatabase(), "SELECT name FROM Categories WHERE id='$id_category'");
 
 }
 
+/**
+ * Получение списка лотов с одинаковой категорией
+ *
+ * @param int $id_category
+ *
+ * @return array
+ */
 function listLotsByCategories(int $id_category)
 {
             return queryResult(connectToDatabase(),"SELECT

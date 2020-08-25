@@ -1,10 +1,10 @@
 <?php
 /**
- * Вычисляет время до даты окончания торгов
+ * Вычисляет время до даты окончания торгов по лоту
  *
- * @param $expiration_date дата окончания действия цены лота
+ * @param $expiration_date дата окончания действия цены лота введенная пользователем
  *
- * @return array часы и минуты
+ * @return array часы и минуты в массиве
  */
 function countTime(string $expiration_date) : array
 {

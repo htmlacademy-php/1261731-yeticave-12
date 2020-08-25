@@ -2,8 +2,10 @@
 require_once('constants.php');
 
 /**
- * @param string $date
- * @return string
+ * Проверка даты введеной пользователем в форме, что дата не меньше текущей даты. 
+ * 
+ * @param string $date Дата введенная пользователем
+ * @return string|null
  */
 function compareDates(string $date)
 {
@@ -40,10 +42,12 @@ function isEmpty($required_fields)
 
 
 /**
- * @param $name
+ * Проверка на корректное заполнение поля категории лота в форме добавления лота
+ * 
+ * @param string $name
  * @return string
  */
-function validateCategory($name)
+function validateCategory(string $name)
 {
     if ($_POST[$name] === 'Выберите категорию') {
         return "Не выбрана категория";
@@ -51,6 +55,8 @@ function validateCategory($name)
 }
 
 /**
+ * Проверка формата файла на соответсвие формату jpg, jpeg, png
+ * 
  * @param $name
  * @return string
  */
@@ -72,6 +78,8 @@ function validateFiles($name)
 }
 
 /**
+ * Проверка поля ставки в форме добавления лота на положителльное число
+ * 
  * @param $name
  * @return string
  */
@@ -83,6 +91,8 @@ function validateLotRate($name)
 }
 
 /**
+ * Проверка поля шаг ставки в форме добавления лота на положителльное число и то что оно целое
+ * 
  * @param $name
  * @return string
  */
@@ -96,6 +106,8 @@ function validateLotStep($name)
 }
 
 /**
+ * Проверка поля почты в форме добавления нового ользователя на уникальность
+ * 
  * @param $name
  * @return string
  */
@@ -113,6 +125,8 @@ function validateFormatEmail($name)
 }
 
 /**
+ * Валидация информации о пользователе при его логировании
+ * 
  * @param $email
  * @param $password
  * @return array
@@ -138,7 +152,14 @@ function checkUser($email, $password)
     return $errors;
 }
 
-function validateCost($id_lot, $cost)
+/**
+ * Сравнение ставки пользователя с поседней ставкой 
+ * 
+ * @param $id_lot
+ * @param $cost
+ * @return array
+ */
+function validateCost(int $id_lot, int $cost)
 {
     $last_cost_lot = getCurrentCost($id_lot); 
     $step_cost_lot = getStepCostLots($id_lot); 
