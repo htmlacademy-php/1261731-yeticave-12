@@ -2,10 +2,10 @@
 
 
 /**
- * Организация запроса в БД по сформированной команде sql
+ * Возвращает массив с данными из БД по сформированной команде sql
  * 
- * @param $db_connection
- * @param $query
+ * @param $db_connection ресурс подключения к БД
+ * @param $query SQL запрс
  * @return array|null
  */
 function queryResult($db_connection, $query) {

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Сборка шаблона страницы
+ * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
  * 
- * @param $path
- * @param array $data
- * @return false|string
+ * @param $path Путь к файлу шаблона относительно папки templates
+ * @param array $data Ассоциативный массив с данными для шаблона
+ * @return false|string Итоговый HTML
  */
 function includeTemplate($path, array $data = [])
 {

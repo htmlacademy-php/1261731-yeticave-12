@@ -1,9 +1,13 @@
 <?php
 
 /**
- * Получает из БД информацию о катеогрии лота:
- * id;
- * название категории лота.
+ * Возвращает список всех катеогрии лотов из таблицы Категорий.
+ * Список отсортирован по полю id категории.
+ * 
+ * Получаемые поля:
+ * id категории,
+ * название категории лота,
+ * символьный код категории.
  *
  * @return array|null
  */
@@ -14,7 +18,7 @@ function getCategories()
 
 
 /**
- * Получает из БД информацию о пользователе на основании переданного email
+ * Возвращает id и имя пользователя на основании переданного email
  *
  * Результат: [0=>id пользователя,
  *             1=>имя пользователя
@@ -40,14 +44,15 @@ function getUserName(string $email)
 }
 
 /**
- * Получение последних шести лотов.
- * По каждому лоту запрос полей:
- * название категории,
+ * Возвращает список последних шести лотов.
+ * 
+ * Получаемые поля:
+ * название категории лота,
  * id лота,
  * название лота,
- * начальная цена,
+ * начальная цена лота,
  * путь к фото лота,
- * дата окончания действия цуны
+ * дата окончания действия торгов по лоту
  *
  * @return array|null
  */
@@ -68,9 +73,22 @@ function getLots()
 }
 
 /**
- * Поиск лотов по запросу пользователя
  * Реализация поисковой системы по каталогу лотов
+ * Возвращает список лотов на основании поискового запроса пользователя.
  *
+ * Получаемые поля:
+ * id лота,
+ * id категории,
+ * id победителя,
+ * id владельца лота,
+ * название лота,
+ * описание лота,
+ * начальная цена лота,
+ * шаг ставки,
+ * путь к фото лота,
+ * дата создания лота,
+ * дата завершения торгов по лоту 
+ * 
  * @return array|null
  */
 function searchLots()
@@ -98,8 +116,19 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
 }
 
 /**
- * Получение информации о лоте по его id
+ * Возвращает информаци о лоте по его id
  *
+ * Получаемые поля:
+ * id лота,
+ * название категории лота,
+ * название лота,
+ * описание лота,
+ * начальная цена лота,
+ * шаг ставки,
+ * текущая цена,
+ * путь к фото лота,
+ * дата завершения торгов по лоту
+ * 
  * @param int $id
  *
  * @return array|null
@@ -108,11 +137,20 @@ function getLotQuery(int $id)
 {
     $link = connectToDatabase();
     $lot_id = $id;
-    $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
-    INNER JOIN Categories ON Lots.category_id=Categories.id 
-    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
+    $sql_get_lot = "SELECT 
+                          Categories.name AS category, 
+                          Lots.id, 
+                          Lots.name, 
+                          cost_start, 
+                          step_cost, 
+                          detail, 
+                          photo, 
+                          cost, 
+                          date_finished AS expiration_time 
+                    FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+                    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
     $stmt = mysqli_prepare($link, $sql_get_lot);
-    mysqli_stmt_bind_param($stmt, 's',$lot_id);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
     mysqli_stmt_fetch($stmt);
