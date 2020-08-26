@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Добавляет в БД новый лот
- * 
- * @param $photo Путь к файлу с картинкой лота
- * @param $connect Ресурс подключения к БД
- * 
- * @return null
- */
 function addLot($photo, $connect)
 {
 

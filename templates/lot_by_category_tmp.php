@@ -5,7 +5,7 @@
       <div class="container">
           <section class="lots">
               <?php if (!empty($result_search)): ?>
-              <h2>Все лоты в категории «<span><?= $name_category_lot[0]['name']; ?></span>»</h2>
+              <h2>Все лоты в категории «<span><?= $name_category_lot; ?></span>»</h2>
 
               <?php foreach ($result_search as $value): ?>
 

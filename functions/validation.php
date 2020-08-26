@@ -157,14 +157,14 @@ function checkUser($email, $password)
  *
  * @param $id_lot
  * @param $cost
- * @return array
+ * @return string|null
  */
 function validateCost(int $id_lot, string $cost)
 {
     $errors = null;
     $last_cost_lot = getCurrentCost($id_lot);
     $step_cost_lot = getStepCostLots($id_lot);
-    $control_cost = $last_cost_lot[0]['cost'] + $step_cost_lot[0]['step_cost'];
+    $control_cost = $last_cost_lot + $step_cost_lot;
     $cost_from_user = $_POST[$cost];
     if($cost_from_user <= 0) {
         $errors = "Не корректная цена";

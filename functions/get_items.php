@@ -1,13 +1,9 @@
 <?php
 
 /**
- * Возвращает список всех катеогрии лотов из таблицы Категорий.
- * Список отсортирован по полю id категории.
- * 
- * Получаемые поля:
- * id категории,
- * название категории лота,
- * символьный код категории.
+ * Получает из БД информацию о катеогрии лота:
+ * id;
+ * название категории лота.
  *
  * @return array|null
  */
@@ -18,7 +14,7 @@ function getCategories()
 
 
 /**
- * Возвращает id и имя пользователя на основании переданного email
+ * Получает из БД информацию о пользователе на основании переданного email
  *
  * Результат: [0=>id пользователя,
  *             1=>имя пользователя
@@ -44,15 +40,14 @@ function getUserName(string $email)
 }
 
 /**
- * Возвращает список последних шести лотов.
- * 
- * Получаемые поля:
- * название категории лота,
+ * Получение последних шести лотов.
+ * По каждому лоту запрос полей:
+ * название категории,
  * id лота,
  * название лота,
- * начальная цена лота,
+ * начальная цена,
  * путь к фото лота,
- * дата окончания действия торгов по лоту
+ * дата окончания действия цуны
  *
  * @return array|null
  */
@@ -73,22 +68,9 @@ function getLots()
 }
 
 /**
+ * Поиск лотов по запросу пользователя
  * Реализация поисковой системы по каталогу лотов
- * Возвращает список лотов на основании поискового запроса пользователя.
  *
- * Получаемые поля:
- * id лота,
- * id категории,
- * id победителя,
- * id владельца лота,
- * название лота,
- * описание лота,
- * начальная цена лота,
- * шаг ставки,
- * путь к фото лота,
- * дата создания лота,
- * дата завершения торгов по лоту 
- * 
  * @return array|null
  */
 function searchLots()
@@ -116,19 +98,8 @@ WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
 }
 
 /**
- * Возвращает информаци о лоте по его id
+ * Получение информации о лоте по его id
  *
- * Получаемые поля:
- * id лота,
- * название категории лота,
- * название лота,
- * описание лота,
- * начальная цена лота,
- * шаг ставки,
- * текущая цена,
- * путь к фото лота,
- * дата завершения торгов по лоту
- * 
  * @param int $id
  *
  * @return array|null
@@ -137,20 +108,11 @@ function getLotQuery(int $id)
 {
     $link = connectToDatabase();
     $lot_id = $id;
-    $sql_get_lot = "SELECT 
-                          Categories.name AS category, 
-                          Lots.id, 
-                          Lots.name, 
-                          cost_start, 
-                          step_cost, 
-                          detail, 
-                          photo, 
-                          cost, 
-                          date_finished AS expiration_time 
-                    FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
-                    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
+    $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
+    INNER JOIN Categories ON Lots.category_id=Categories.id 
+    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
     $stmt = mysqli_prepare($link, $sql_get_lot);
-    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_bind_param($stmt, 's',$lot_id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
     mysqli_stmt_fetch($stmt);
@@ -193,16 +155,32 @@ function getPage404($menu_lot, int $id, $item_lot)
  */
 function getCurrentCost(int $id_lot)
 {
+    $link = connectToDatabase();
     $sql_get_carrent_cost = "SELECT cost FROM Rates 
-                             WHERE lot_id='$id_lot' 
+                             WHERE lot_id=? 
                              ORDER BY cost DESC LIMIT 1";
-    $get_cost = queryResult(connectToDatabase(), $sql_get_carrent_cost);
-    if (empty($get_cost)) {
-        $sql_get_carrent_cost = "SELECT cost_start FROM Lots WHERE id='$id_lot'";
 
+    $stmt = mysqli_prepare($link,  $sql_get_carrent_cost);
+    mysqli_stmt_bind_param($stmt, 'i',$id_lot);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_cost);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_cost;
+    mysqli_stmt_close($stmt);
+
+
+    if (empty($result)) {
+        $sql_get_carrent_cost = "SELECT cost_start FROM Lots WHERE id=?";
+        $stmt = mysqli_prepare($link,  $sql_get_carrent_cost);
+        mysqli_stmt_bind_param($stmt, 'i',$id_lot);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $get_cost);
+        mysqli_stmt_fetch($stmt);
+        $result = $get_cost;
+        mysqli_stmt_close($stmt);
     }
 
-    return queryResult(connectToDatabase(), $sql_get_carrent_cost);
+    return $result;
 }
 
 /**
@@ -214,8 +192,16 @@ function getCurrentCost(int $id_lot)
  */
 function getStepCostLots(int $id_lot)
 {
-    $sql_get_step_cost = "SELECT step_cost FROM Lots WHERE id='$id_lot'";
-    return queryResult(connectToDatabase(), $sql_get_step_cost);
+    $link = connectToDatabase();
+    $sql_get_step_cost = "SELECT step_cost FROM Lots WHERE id=?";
+    $stmt = mysqli_prepare($link,   $sql_get_step_cost);
+    mysqli_stmt_bind_param($stmt, 'i',$id_lot);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_step_cost);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_step_cost;
+    mysqli_stmt_close($stmt);
+    return $result;
 }
 
 /**
@@ -227,6 +213,7 @@ function getStepCostLots(int $id_lot)
  */
 function getMyRates(int $user_id)
 {
+    $link = connectToDatabase();
    $sql_get_my_rates = "SELECT Lots.id, 
                                Rates.user_id, 
                                name, 
@@ -236,8 +223,15 @@ function getMyRates(int $user_id)
                                winner_id 
                         FROM Lots 
                         RIGHT JOIN Rates ON lot_id=Lots.id 
-                        WHERE Rates.user_id='$user_id'";
-    return queryResult(connectToDatabase(), $sql_get_my_rates);
+                        WHERE Rates.user_id=?";
+    $stmt = mysqli_prepare($link,   $sql_get_my_rates);
+    mysqli_stmt_bind_param($stmt, 'i',$user_id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_my_rates);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_my_rates;
+    mysqli_stmt_close($stmt);
+    return $result;
 
 }
 
@@ -250,8 +244,17 @@ function getMyRates(int $user_id)
  */
 function getUserContacts(int $user_id)
 {
-    $sql_get_user_contacts = "SELECT contact FROM Users WHERE id='$user_id'";
-    return queryResult(connectToDatabase(), $sql_get_user_contacts);
+    $link = connectToDatabase();
+    $sql_get_user_contacts = "SELECT contact FROM Users WHERE id=?";
+
+    $stmt = mysqli_prepare($link,   $sql_get_user_contacts);
+    mysqli_stmt_bind_param($stmt, 'i',$user_id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_user_contacts);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_user_contacts;
+    mysqli_stmt_close($stmt);
+    return $result;
 }
 
 /**
@@ -278,11 +281,23 @@ function getIdWinnerLots()
  */
 function getLastRateForWinnerLot(int $id_winner_lot)
 {
+    $link = connectToDatabase();
     $sql_get_last_rate_for_winner_lot = "SELECT * FROM Rates 
-                                         WHERE lot_id='$id_winner_lot' 
+                                         WHERE lot_id=? 
                                          ORDER BY cost DESC LIMIT 1";
-    $result = queryResult(connectToDatabase(), $sql_get_last_rate_for_winner_lot);
-    return $result [0] ?? null;
+    $stmt = mysqli_prepare($link,   $sql_get_last_rate_for_winner_lot);
+    mysqli_stmt_bind_param($stmt, 'i',$id_winner_lot);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $lot_id, $user_id, $id, $cost, $date_create);
+    mysqli_stmt_fetch($stmt);
+    $result["user_id"] = $user_id;
+    $result["lot_id"] = $lot_id;
+    $result["id"] = $id;
+    $result["cost"] = $cost;
+    $result["date_creat"] = $date_create;
+    mysqli_stmt_close($stmt);
+
+    return $result ?? null;
 }
 
 /**
@@ -292,10 +307,19 @@ function getLastRateForWinnerLot(int $id_winner_lot)
  *
  * @return array
  */
-function getUserInformation(int $userid)
+function getUserInformation($userid)
 {
-    $sql_get_user_information = "SELECT name, email FROM Users WHERE id='$userid'";
-    $result = queryResult(connectToDatabase(), $sql_get_user_information);
+    $link = connectToDatabase();
+    $sql_get_user_information = "SELECT name, email FROM Users WHERE id=?";
+
+    $stmt = mysqli_prepare($link,   $sql_get_user_information);
+    mysqli_stmt_bind_param($stmt, 'i',$userid);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_user_information);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_user_information;
+    mysqli_stmt_close($stmt);
+
     return $result [0] ?? null;
 }
 
@@ -306,10 +330,19 @@ function getUserInformation(int $userid)
  *
  * @return array
  */
-function getInfoLotForEmail(int $id)
+function getInfoLotForEmail($id)
 {
-    $sql_get_lot = "SELECT name FROM Lots WHERE id='$id'";
-    $result = queryResult(connectToDatabase(), $sql_get_lot);
+    $link = connectToDatabase();
+    $sql_get_lot = "SELECT name FROM Lots WHERE id=?";
+
+    $stmt = mysqli_prepare($link,   $sql_get_lot);
+    mysqli_stmt_bind_param($stmt, 'i',$id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_info_lot_for_email);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_info_lot_for_email;
+    mysqli_stmt_close($stmt);
+
     return $result [0] ?? null;
 }
 
@@ -318,11 +351,21 @@ function getInfoLotForEmail(int $id)
  *
  * @param int $id_category
  *
- * @return array
+ * @return string
  */
-function getCetegoryName(int $id_category)
+function getCetegoryName($id_category)
 {
-    return queryResult(connectToDatabase(), "SELECT name FROM Categories WHERE id='$id_category'");
+    $link = connectToDatabase();
+    $sql_get_category_name = "SELECT name FROM Categories WHERE id=?";
+    $stmt = mysqli_prepare($link,   $sql_get_category_name);
+    mysqli_stmt_bind_param($stmt, 'i',$id_category);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $get_category_name);
+    mysqli_stmt_fetch($stmt);
+    $result = $get_category_name;
+    mysqli_stmt_close($stmt);
+
+    return $result;
 
 }
 
@@ -335,7 +378,9 @@ function getCetegoryName(int $id_category)
  */
 function listLotsByCategories(int $id_category)
 {
-            return queryResult(connectToDatabase(),"SELECT
+
+    $link = connectToDatabase();
+    $sql_get_list_lots_by_categories = "SELECT
 Categories.name, 
 Lots.id, 
 category_id, 
@@ -349,6 +394,30 @@ photo,
 date_create,
 date_finished
 FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
-WHERE Categories.id='$id_category'");
-        }
+WHERE Categories.id=?";
+    $stmt = mysqli_prepare($link,   $sql_get_list_lots_by_categories);
+    mysqli_stmt_bind_param($stmt, 'i',$id_category);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $category_name, $id_lot, $id_category, $id_winner, $id_user, $lot_name, $detail, $cost_start, $step_cost, $photo, $date_create, $date_finished);
+    mysqli_stmt_fetch($stmt);
+    $result = [
+               [
+                 'name' => $category_name,
+                 'id_lot' => $id_lot,
+                 'id_category' => $id_category,
+                 'id_winner' => $id_winner,
+                 'id_user' => $id_user,
+                 'detail' => $detail,
+                 'step_cost' => $step_cost,
+                 'photo' => $photo,
+                 'date_create' => $date_create,
+                 'lot_name' => $lot_name,
+                 'cost_start' => $cost_start,
+                 'date_finished' => $date_finished
+               ]
+              ];
+    mysqli_stmt_close($stmt);
+
+    return $result;
+}
 
