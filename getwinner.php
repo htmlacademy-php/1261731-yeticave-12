@@ -9,7 +9,7 @@ foreach($array_id_winner_lots as $value) {
         $last_rate_lots = getLastRateForWinnerLot($value1);
         if (!empty($last_rate_lots)) {
             inputUseridInLotsTable($last_rate_lots["user_id"], $last_rate_lots["lot_id"]);
-            $information_user = getUserInformation($last_rate_lots["user_id"]);
+            $information_user = getUserInformation($last_rate_lots["user_id"]); print_r($information_user); die("getwinner_12");
 
             $info_about_lot = getInfoLotForEmail($last_rate_lots["lot_id"]);
             $text_messge = includeTemplate('email.php',

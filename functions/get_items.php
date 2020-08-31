@@ -61,9 +61,9 @@ function getLots()
                         date_finished AS expiration_time 
                 FROM Lots
                 INNER JOIN Categories ON Lots.category_id=Categories.id
-                LEFT JOIN Rates ON Rates.lot_id=Lots.id
+                WHERE date_finished>current_date
                 ORDER BY Lots.id DESC LIMIT 6";
-
+                
     return queryResult(connectToDatabase(), $sql_lots);
 }
 
@@ -227,10 +227,9 @@ function getMyRates(int $user_id)
     $stmt = mysqli_prepare($link,   $sql_get_my_rates);
     mysqli_stmt_bind_param($stmt, 'i',$user_id);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $get_my_rates);
-    mysqli_stmt_fetch($stmt);
-    $result = $get_my_rates;
-    mysqli_stmt_close($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    
     return $result;
 
 }
@@ -313,11 +312,12 @@ function getUserInformation($userid)
     $sql_get_user_information = "SELECT name, email FROM Users WHERE id=?";
 
     $stmt = mysqli_prepare($link,   $sql_get_user_information);
-    mysqli_stmt_bind_param($stmt, 'i',$userid);
+    mysqli_stmt_bind_param($stmt, 'i', $userid);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $get_user_information);
+    mysqli_stmt_bind_result($stmt, $get_user_name, $get_user_email);
     mysqli_stmt_fetch($stmt);
-    $result = $get_user_information;
+    $result["name"] = $get_user_name;
+    $result["email"] = $get_user_email;
     mysqli_stmt_close($stmt);
 
     return $result [0] ?? null;
@@ -340,7 +340,7 @@ function getInfoLotForEmail($id)
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $get_info_lot_for_email);
     mysqli_stmt_fetch($stmt);
-    $result = $get_info_lot_for_email;
+    $result["name"] = $get_info_lot_for_email;
     mysqli_stmt_close($stmt);
 
     return $result [0] ?? null;
@@ -395,29 +395,12 @@ date_create,
 date_finished
 FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
 WHERE Categories.id=?";
-    $stmt = mysqli_prepare($link,   $sql_get_list_lots_by_categories);
-    mysqli_stmt_bind_param($stmt, 'i',$id_category);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $category_name, $id_lot, $id_category, $id_winner, $id_user, $lot_name, $detail, $cost_start, $step_cost, $photo, $date_create, $date_finished);
-    mysqli_stmt_fetch($stmt);
-    $result = [
-               [
-                 'name' => $category_name,
-                 'id_lot' => $id_lot,
-                 'id_category' => $id_category,
-                 'id_winner' => $id_winner,
-                 'id_user' => $id_user,
-                 'detail' => $detail,
-                 'step_cost' => $step_cost,
-                 'photo' => $photo,
-                 'date_create' => $date_create,
-                 'lot_name' => $lot_name,
-                 'cost_start' => $cost_start,
-                 'date_finished' => $date_finished
-               ]
-              ];
-    mysqli_stmt_close($stmt);
-
+    $stmt = mysqli_prepare($link, $sql_get_list_lots_by_categories);
+    mysqli_stmt_bind_param($stmt, 'i', $id_category);
+    mysqli_stmt_execute($stmt);   
+    $res = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    
     return $result;
 }
 

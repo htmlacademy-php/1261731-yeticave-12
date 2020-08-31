@@ -5,14 +5,14 @@ $title = "Лоты по категориям";
 require_once('functions/config.php');
 $user_name = $_SESSION['user'] ?? null;
 
-$id_category_lot = $_GET['id_category_lot'];
-$name_category_lot = getCetegoryName($id_category_lot);
+$id_category_lot = $_GET['id_category_lot']; 
+$name_category_lot = getCetegoryName($id_category_lot); 
 $categories = getCategories();
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $result_search = [];
 
 
-$result_search = listLotsByCategories($id_category_lot);
+$result_search = listLotsByCategories($id_category_lot); 
 
 $head = includeTemplate('head_lot_index.php', ['title' => $title]);
 $page_content = includeTemplate(

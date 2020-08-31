@@ -15,7 +15,7 @@
             </div>
             <div>
             <h3 class="rates__title"><a href="lot.php?id=<?= $value['id']; ?>"><?= $value['name']; ?></a></h3>
-            <p><?= $user_contacts[0]['contact']; ?></p>
+            <p><?= $user_contacts; ?></p>
         </div>
           </td>
           <td class="rates__category">
