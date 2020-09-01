@@ -12,12 +12,13 @@ $categories = getCategories();
 $user_contacts = getUserContacts($user_id);
 $my_rates = getMyRates($user_id);
 
+
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = includeTemplate('myrates_tmp.php', [
     'menu_lot' => $menu_lot,
     'categories' => $categories,
     'user_contacts' => $user_contacts,
-    'my_rates' => $my_rates
+    'my_rates' => $my_rates    
    ]);
 $head = includeTemplate('head_add_lot.php');
 $layout_content = includeTemplate('layout.php', [

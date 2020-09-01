@@ -215,17 +215,17 @@ function getMyRates(int $user_id)
 {
     $link = connectToDatabase();
    $sql_get_my_rates = "SELECT Lots.id, 
-                               Rates.user_id, 
+                               Rates.user_id,                               
                                name, 
                                cost, 
                                Rates.date_create, 
                                photo, 
                                winner_id 
                         FROM Lots 
-                        RIGHT JOIN Rates ON lot_id=Lots.id 
+                        RIGHT JOIN Rates ON lot_id=Lots.id                          
                         WHERE Rates.user_id=?";
     $stmt = mysqli_prepare($link,   $sql_get_my_rates);
-    mysqli_stmt_bind_param($stmt, 'i',$user_id);
+    mysqli_stmt_bind_param($stmt, 'i', $user_id);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -233,6 +233,7 @@ function getMyRates(int $user_id)
     return $result;
 
 }
+
 
 /**
  * Получение контактов пользователя по id пользователя
@@ -320,7 +321,7 @@ function getUserInformation($userid)
     $result["email"] = $get_user_email;
     mysqli_stmt_close($stmt);
 
-    return $result [0] ?? null;
+    return $result ?? null;
 }
 
 /**
@@ -343,7 +344,7 @@ function getInfoLotForEmail($id)
     $result["name"] = $get_info_lot_for_email;
     mysqli_stmt_close($stmt);
 
-    return $result [0] ?? null;
+    return $result ?? null;
 }
 
 /**

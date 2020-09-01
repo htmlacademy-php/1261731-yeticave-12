@@ -19,7 +19,7 @@
         </div>
           </td>
           <td class="rates__category">
-          <?= $value['category']; ?>
+          <?= $category_name[0]['name']; ?>
           </td>
           <td class="rates__timer">
           <?= $value['date_create']; ?>
@@ -40,7 +40,7 @@
             <h3 class="rates__title"><a href="lot.php?id=<?= $value['id']; ?>"><?= $value['name']; ?></a></h3>
           </td>
           <td class="rates__category">
-          <?= $value['category']; ?>
+          <?= $category_name[0]['name']; ?>
           </td>
           <td class="rates__timer">
           <?= $value['date_create']; ?>
