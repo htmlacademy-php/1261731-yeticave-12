@@ -17,7 +17,7 @@ $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', '
 $categories = getCategories();
 
 if (isset($_POST['submit'])) {
-    if (isEmpty($required_fields)) {
+    if (isEmpty($required_fields)) { 
         $errors = isEmpty($required_fields);
     } else {
         $rules = [
@@ -27,6 +27,7 @@ if (isset($_POST['submit'])) {
             'category' => validateCategory('category'),
             'lot-date' => compareDates('lot-date')
         ];
+        
 
         foreach ($_POST as $key => $value) {
             if (isset($rules[$key])) {
@@ -41,7 +42,7 @@ if (isset($_POST['submit'])) {
 }
 
 
-if (!isset($errors) && isset($_POST['lot-name'])) {
+if (empty($errors) && isset($_POST['lot-name'])) {
     $file_name = $_FILES['avatar']['name'];
 
     $photo = "/uploads/" . $file_name;
