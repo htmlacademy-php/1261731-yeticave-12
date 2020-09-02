@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
 }
 
 
-if (!isset($errors) && isset($_POST['email'])) {
+if (empty($errors) && isset($_POST['email'])) {
 $db = connectToDatabase();
     $name_user = $_POST['name'];
     $email_user = $_POST['email'];
