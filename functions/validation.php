@@ -2,8 +2,10 @@
 require_once('constants.php');
 
 /**
- * @param string $date
- * @return string
+ * Проверка даты введеной пользователем в форме, что дата не меньше текущей даты.
+ *
+ * @param string $date Дата введенная пользователем
+ * @return string|null
  */
 function compareDates(string $date)
 {
@@ -25,7 +27,7 @@ function compareDates(string $date)
  * передаем массив с именами полей формы
  * парсим его и проверяем POST элементы на заолненность
  * если POST пуст то записываем в массив поле с заданным тестом
- * возвращаем массив ошибок [название поля => суть ошибки]  
+ * возвращаем массив ошибок [название поля => суть ошибки]
  */
 function isEmpty($required_fields)
 {
@@ -40,10 +42,12 @@ function isEmpty($required_fields)
 
 
 /**
- * @param $name
+ * Проверка на корректное заполнение поля категории лота в форме добавления лота
+ *
+ * @param string $name
  * @return string
  */
-function validateCategory($name)
+function validateCategory(string $name)
 {
     if ($_POST[$name] === 'Выберите категорию') {
         return "Не выбрана категория";
@@ -51,6 +55,8 @@ function validateCategory($name)
 }
 
 /**
+ * Проверка формата файла на соответсвие формату jpg, jpeg, png
+ *
  * @param $name
  * @return string
  */
@@ -72,6 +78,8 @@ function validateFiles($name)
 }
 
 /**
+ * Проверка поля ставки в форме добавления лота на положителльное число
+ *
  * @param $name
  * @return string
  */
@@ -83,6 +91,8 @@ function validateLotRate($name)
 }
 
 /**
+ * Проверка поля шаг ставки в форме добавления лота на положителльное число и то что оно целое
+ *
  * @param $name
  * @return string
  */
@@ -96,6 +106,8 @@ function validateLotStep($name)
 }
 
 /**
+ * Проверка поля почты в форме добавления нового ользователя на уникальность
+ *
  * @param $name
  * @return string
  */
@@ -113,6 +125,8 @@ function validateFormatEmail($name)
 }
 
 /**
+ * Валидация информации о пользователе при его логировании
+ *
  * @param $email
  * @param $password
  * @return array
@@ -138,14 +152,22 @@ function checkUser($email, $password)
     return $errors;
 }
 
-function validateCost($id_lot, $cost)
+/**
+ * Сравнение ставки пользователя с поседней ставкой
+ *
+ * @param $id_lot
+ * @param $cost
+ * @return string|null
+ */
+function validateCost(int $id_lot, string $cost)
 {
-    $last_cost_lot = getCurrentCost($id_lot); 
-    $step_cost_lot = getStepCostLots($id_lot); 
-    $control_cost = $last_cost_lot[0]['cost_start'] + $step_cost_lot[0]['step_cost'];
-    $cost_from_user = $_POST[$cost]; 
+    $errors = null;
+    $last_cost_lot = getCurrentCost($id_lot);
+    $step_cost_lot = getStepCostLots($id_lot);
+    $control_cost = $last_cost_lot + $step_cost_lot;
+    $cost_from_user = $_POST[$cost];
     if($cost_from_user <= 0) {
-        $errors = "Не корректная цена";        
+        $errors = "Не корректная цена";
     } elseif ($cost_from_user < $control_cost)  {
         $errors = "Введена цена ниже текущей";
     }

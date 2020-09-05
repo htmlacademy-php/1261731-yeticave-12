@@ -1,6 +1,7 @@
 <?php
 $title = "Вход";
 $required_fields = ['email', 'password'];
+$errors = [];
 
 require_once('functions/config.php');
 
@@ -26,12 +27,12 @@ if (isset($_POST['submit'])) {
     }
 }
 
-if (!isset($errors) && isset($_POST['email'])) {
+if (empty($errors) && isset($_POST['email'])) {
     session_start();
 
     $user_info = getUserName($_POST['email']);
-    $_SESSION['user'] = $user_info[0]['name'];
-    $_SESSION['user_id'] = $user_info[0]['id'];
+    $_SESSION['user'] = $user_info[1];
+    $_SESSION['user_id'] = $user_info[0];
 
     header("Location:index.php");
 }
@@ -46,8 +47,6 @@ $layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
     'title' => $title,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'categories' => $categories
 ]);
 

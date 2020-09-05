@@ -3,6 +3,7 @@
 $title = "Результаты поиска";
 
 require_once('functions/config.php');
+$user_name = $_SESSION['user'] ?? null;
 
 $categories = getCategories();
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);

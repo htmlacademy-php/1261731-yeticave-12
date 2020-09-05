@@ -27,8 +27,8 @@ function addLot($photo, $connect)
 function inputCost($id_lot, $connect)
 {
 
-    $user_id = $_SESSION['user_id']; 
-    $lot_id = $id_lot; 
+    $user_id = $_SESSION['user_id'];
+    $lot_id = $id_lot;
     $cost = $_POST['cost'];
     $date_create = date('Y-m-d');
 
@@ -41,7 +41,7 @@ function inputCost($id_lot, $connect)
 }
 
 function inputUseridInLotsTable($userid, $lotid) {
-    $sql_update_winnerid = "UPDATE lots SET winner_id='$userid' WHERE id='$lotid'";
+    $sql_update_winnerid = "UPDATE Lots SET winner_id='$userid' WHERE id='$lotid'";
     mysqli_query(connectToDatabase(), $sql_update_winnerid);
-    
+
 }
