@@ -1,10 +1,11 @@
 <?php
 
 /**
+ * Загрузка файла с картинкой на сервер
+ * 
  * @param $name
  */
-
-function loadFiles($name)
+function loadFiles(string $name)
 {
 
     $main_path = __DIR__ . '/../';

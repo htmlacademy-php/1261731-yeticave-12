@@ -8,6 +8,7 @@ if (isset($_SESSION['user'])) {
 
 $title = "Регистрация";
 $required_fields = ['email', 'password', 'name', 'message'];
+$errors =[];
 
 require_once('functions/config.php');
 
@@ -36,7 +37,7 @@ if (isset($_POST['submit'])) {
 }
 
 
-if (!isset($errors) && isset($_POST['email'])) {
+if (empty($errors) && isset($_POST['email'])) {
 $db = connectToDatabase();
     $name_user = $_POST['name'];
     $email_user = $_POST['email'];
@@ -63,8 +64,6 @@ $layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
     'title' => $title,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'categories' => $categories
 ]);
 

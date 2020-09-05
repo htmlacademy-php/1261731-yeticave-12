@@ -15,12 +15,9 @@
             </div>
             <div>
             <h3 class="rates__title"><a href="lot.php?id=<?= $value['id']; ?>"><?= $value['name']; ?></a></h3>
-            <p><?= $user_contacts[0]['contact']; ?></p>
+            <p><?= $user_contacts; ?></p>
         </div>
-          </td>
-          <td class="rates__category">
-          <?= $value['category']; ?>
-          </td>
+          </td>          
           <td class="rates__timer">
           <?= $value['date_create']; ?>
                 
@@ -39,10 +36,7 @@
             </div>
             <h3 class="rates__title"><a href="lot.php?id=<?= $value['id']; ?>"><?= $value['name']; ?></a></h3>
           </td>
-          <td class="rates__category">
-          <?= $value['category']; ?>
-          </td>
-          <td class="rates__timer">
+                    <td class="rates__timer">
           <?= $value['date_create']; ?>
                 
           </td>

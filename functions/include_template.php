@@ -1,11 +1,12 @@
 <?php
 
 /**
+ * Сборка шаблона страницы
+ * 
  * @param $path
  * @param array $data
  * @return false|string
  */
-
 function includeTemplate($path, array $data = [])
 {
     $path = 'templates/' . $path;
