@@ -46,11 +46,10 @@ if(empty($page_content)) {
     ]);
 }
 
-    $head = includeTemplate('head_lot_index.php');
+    $head = includeTemplate('head_lot_index.php', ['title' => $title]);
     $layout_content = includeTemplate('layout.php', [
         'head' => $head,
-        'content' => $page_content,
-        'title' => $title,
+        'content' => $page_content,        
         'user_name' => $user_name,
         'categories' => $categories
     ]);

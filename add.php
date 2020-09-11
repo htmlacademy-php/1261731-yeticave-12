@@ -14,7 +14,7 @@ if (!isset($_SESSION['user'])) {
 $title = "Добавление лота";
 $errors = [];
 $user_name = $_SESSION['user'] ?? null;
-$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date']; // для передачи в метод isEmpty
+$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date', 'avatar']; 
 $categories = getCategories();
 
 if (isset($_POST['submit'])) {

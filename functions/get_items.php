@@ -377,9 +377,8 @@ function getCetegoryName($id_category)
  *
  * @return array
  */
-function listLotsByCategories(int $id_category)
+function listLotsByCategories(int $id_category, $amount_item_on_page, $start_item)
 {
-
     $link = connectToDatabase();
     $sql_get_list_lots_by_categories = "SELECT
 Categories.name, 
@@ -395,9 +394,10 @@ photo,
 date_create,
 date_finished
 FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
-WHERE Categories.id=?";
+WHERE Categories.id=? AND date_finished>current_date LIMIT ? OFFSET ?";
+
     $stmt = mysqli_prepare($link, $sql_get_list_lots_by_categories);
-    mysqli_stmt_bind_param($stmt, 'i', $id_category);
+    mysqli_stmt_bind_param($stmt, 'iii', $id_category, $amount_item_on_page, $start_item);
     mysqli_stmt_execute($stmt);   
     $res = mysqli_stmt_get_result($stmt);
     $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -405,3 +405,25 @@ WHERE Categories.id=?";
     return $result;
 }
 
+/**
+ * Возвращает список всей записей из таблицы лотов имеющих категорию, 
+ * которую передали в нее
+ * 
+ * @param int $id_category
+ * 
+ * @return array
+ */
+function listAllItemsForCategory (int $id_category) {
+    $link = connectToDatabase();
+    
+        $sql_get_list_lots_by_categories = "SELECT id FROM Lots WHERE category_id=?";    
+ 
+    $stmt = mysqli_prepare($link, $sql_get_list_lots_by_categories);
+    mysqli_stmt_bind_param($stmt, 'i', $id_category);
+    mysqli_stmt_execute($stmt);   
+    $res = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    
+    return $result;
+
+}
