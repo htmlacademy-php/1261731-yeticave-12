@@ -67,35 +67,6 @@ function getLots()
     return queryResult(connectToDatabase(), $sql_lots);
 }
 
-/**
- * Поиск лотов по запросу пользователя
- * Реализация поисковой системы по каталогу лотов
- *
- * @return array|null
- */
-function searchLots()
-{
-    if (isset($_GET['find'])) {
-        $query_for_search = trim($_GET['search']);
-        if (!empty($query_for_search)) {
-            return queryResult(connectToDatabase(),"SELECT
-Categories.name, 
-Lots.id, 
-category_id, 
-winner_id, 
-user_id, 
-Lots.name AS lot_name, 
-detail, 
-cost_start,
-step_cost,
-photo,
-date_create,
-date_finished
-FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
-WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
-        }
-    }
-}
 
 /**
  * Получение информации о лоте по его id
@@ -403,6 +374,86 @@ WHERE Categories.id=? AND date_finished>current_date LIMIT ? OFFSET ?";
     $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
     
     return $result;
+}
+
+/**
+ * Поиск лотов по запросу пользователя
+ * Реализация поисковой системы по каталогу лотов
+ *
+ * @return array|null
+ */
+function searchLots(int $number_page)
+{
+    $link = connectToDatabase();
+    $amount_item_on_page = 9;
+    $start_item = ($number_page - 1) * $amount_item_on_page;
+
+    if (isset($_GET['find'])) {
+        $query_for_search = trim($_GET['search']);
+        if (!empty($query_for_search)) {
+            $sql_get_list_lots_by_query_search = 
+             "SELECT
+             Categories.name, 
+             Lots.id, 
+             category_id, 
+             winner_id, 
+             user_id, 
+             Lots.name AS lot_name, 
+             detail, 
+             cost_start,
+             step_cost,
+             photo,
+             date_create,
+             date_finished
+             FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+             WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search') 
+             LIMIT $amount_item_on_page OFFSET ?";
+
+$stmt = mysqli_prepare($link, $sql_get_list_lots_by_query_search);
+mysqli_stmt_bind_param($stmt, 'i', $start_item);
+mysqli_stmt_execute($stmt);   
+$res = mysqli_stmt_get_result($stmt);
+$result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+return $result;
+        }
+    }
+}
+
+function allListItemsSearchLots()
+{
+    $link = connectToDatabase();
+    
+
+    if (isset($_GET['find'])) {
+        $query_for_search = trim($_GET['search']);
+        if (!empty($query_for_search)) {
+            $sql_get_list_lots_by_query_search = 
+             "SELECT
+             Categories.name, 
+             Lots.id, 
+             category_id, 
+             winner_id, 
+             user_id, 
+             Lots.name AS lot_name, 
+             detail, 
+             cost_start,
+             step_cost,
+             photo,
+             date_create,
+             date_finished
+             FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+             WHERE MATCH(Lots.name, Lots.detail) AGAINST(?)";
+
+$stmt = mysqli_prepare($link, $sql_get_list_lots_by_query_search);
+mysqli_stmt_bind_param($stmt, 's', $query_for_search);
+mysqli_stmt_execute($stmt);   
+$res = mysqli_stmt_get_result($stmt);
+$result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+return $result;
+        }
+    }
 }
 
 /**
