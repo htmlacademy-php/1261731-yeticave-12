@@ -63,14 +63,16 @@ function validateCategory(string $name)
 function validateFiles($name)
 {
     if (!empty($_FILES[$name]['name'])) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_tmp = $_FILES[$name]['tmp_name'];
-        $file_type = mime_content_type($file_tmp);
+        
         $png = "image/png";
         $jpeg = "image/jpeg";
 
+        $file_type = finfo_file($finfo, $file_tmp);
 
-        if (strcmp($file_type, $png) == 1 || strcmp($file_type, $jpeg) == 1) {
-
+        if ($file_type !== $png && $file_type !== $jpeg) {
+            
             return "Загрузите картинку (графический файл) в формате: jpg, jpeg, png";
         }
 
@@ -173,4 +175,22 @@ function validateCost(int $id_lot, string $cost)
     }
 
     return $errors;
+}
+
+/**
+ * @param array $errors массив ошибок может быть пустым
+ * @return array
+ * 
+ * Проверяет загружен ли файл с картинкой лота
+ * возвращаем массив ошибок [название поля => суть ошибки]
+ */
+function isLoadFile($errors=[])
+{   
+    
+        if (empty($_FILES['avatar']['name'])) {
+            
+            $errors['avatar'] = 'Загрузите файл';        
+    }
+    
+    return $errors = array_filter($errors);
 }

@@ -14,12 +14,23 @@ if (!isset($_SESSION['user'])) {
 $title = "Добавление лота";
 $errors = [];
 $user_name = $_SESSION['user'] ?? null;
-$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date', 'avatar']; 
+$required_fields = [
+                     'lot-name', 
+                     'category', 
+                     'message', 
+                     'lot-rate', 
+                     'lot-step', 
+                     'lot-date'                     
+                    ]; 
 $categories = getCategories();
 
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) { 
         $errors = isEmpty($required_fields);
+    } 
+    if (isLoadFile($errors)) {  
+       $errors = isLoadFile($errors); print_r($errors); die("add_31");
+       
     } else {
         $rules = [
             'lot-rate' => validateLotRate('lot-rate'),
