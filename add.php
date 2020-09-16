@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
         $errors = isEmpty($required_fields);
     } 
     if (isLoadFile($errors)) {  
-       $errors = isLoadFile($errors); print_r($errors); die("add_31");
+       $errors = isLoadFile($errors); 
        
     } else {
         $rules = [
@@ -82,6 +82,6 @@ $layout_content = includeTemplate('layout.php', [
     'categories' => $categories
 ]);
 
-
+  
 print($layout_content);
 
