@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Добавляет в БД новый лот
+ * @param $photo путь к фото лота
+ * @param $connect подключение к БД
+ * 
+ * 
+ */
 function addLot($photo, $connect)
 {
 
@@ -40,8 +47,17 @@ function inputCost($id_lot, $connect)
 
 }
 
+/**
+ * Добавляет id победителя в таблицу лотов
+ * @param $user_id id победителя
+ * @param $lotid id лота
+ * 
+ */
 function inputUseridInLotsTable($userid, $lotid) {
-    $sql_update_winnerid = "UPDATE Lots SET winner_id='$userid' WHERE id='$lotid'";
-    mysqli_query(connectToDatabase(), $sql_update_winnerid);
+    $link = connectToDatabase(); 
+    $sql_update_winnerid = "UPDATE Lots SET winner_id=? WHERE id=?";
+    $update_winnerid = mysqli_prepare($link, $sql_update_winnerid);
+    mysqli_stmt_bind_param($update_winnerid, 'ii', $userid, $lotid); 
+    mysqli_stmt_execute($update_winnerid);
 
 }

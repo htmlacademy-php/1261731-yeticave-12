@@ -24,7 +24,7 @@
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
-                            <span class="lot-item__cost"><?= $item_lot['cost']; ?></span>
+                            <span class="lot-item__cost"><?= $cost_current; ?></span>
                         </div>
                         <div class="lot-item__min-cost">
                             Мин. ставка <span><?= $item_lot['step_cost']; ?></span>
@@ -41,31 +41,7 @@
                     </form>
 
                 </div>
-                <div class="history">
-                    <h3>История ставок (<span>10</span>)</h3>
-                    <table class="history__list">
-                        <tr class="history__item">
-                            <td class="history__name">Иван</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">5 минут назад</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Константин</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">20 минут назад</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Евгений</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">Час назад</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Игорь</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 08:21</td>
-                        </tr>
-                    </table>
-                </div>
+                <?= $history_lot; ?>
             </div>
         </div>
 </section>

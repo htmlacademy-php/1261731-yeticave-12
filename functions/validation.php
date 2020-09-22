@@ -115,12 +115,19 @@ function validateLotStep($name)
  */
 function validateFormatEmail($name)
 {
-    $name = $_POST[$name];
-    $items = queryResult(
-        connectToDatabase(),
-        "SELECT email FROM Users WHERE email LIKE '" . $name . "'");
+    $link = connectToDatabase();
+    $email = $name;
+    $sql_get_email = "SELECT email FROM Users WHERE email LIKE ?" ;
+    $stmt = mysqli_prepare($link, $sql_get_email);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $user_email);
+    mysqli_stmt_fetch($stmt);
+    $result = $user_email;
+    mysqli_stmt_close($stmt);
+    
 
-    if (!empty($items)) {
+    if (!empty($result)) {
         return "Email уже занят";
     }
 
@@ -139,7 +146,8 @@ function checkUser($email, $password)
     $email = $_POST[$email];
 
 
-    $sql_hash = "SELECT password FROM Users WHERE email='$email'";
+    $sql_hash = "SELECT password FROM Users WHERE email='$email'
+    ";
     $hash_from_db = queryResult(connectToDatabase(), $sql_hash);
     $hash_from_db = $hash_from_db[0][$password];
 
@@ -164,9 +172,9 @@ function checkUser($email, $password)
 function validateCost(int $id_lot, string $cost)
 {
     $errors = null;
-    $last_cost_lot = getCurrentCost($id_lot);
+    $last_cost_lot = getCurrentCost($id_lot); 
     $step_cost_lot = getStepCostLots($id_lot);
-    $control_cost = $last_cost_lot + $step_cost_lot;
+    $control_cost = $last_cost_lot + $step_cost_lot; 
     $cost_from_user = $_POST[$cost];
     if($cost_from_user <= 0) {
         $errors = "Не корректная цена";

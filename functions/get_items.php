@@ -478,3 +478,4 @@ function listAllItemsForCategory (int $id_category) {
     return $result;
 
 }
+

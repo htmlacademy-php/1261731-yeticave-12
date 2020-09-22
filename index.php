@@ -1,6 +1,6 @@
 <?php
 session_start();
-//require_once('getwinner.php');
+require_once('getwinner.php');
 
 $title = "Главная";
 
