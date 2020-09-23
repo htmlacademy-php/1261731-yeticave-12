@@ -479,3 +479,25 @@ function listAllItemsForCategory (int $id_category) {
 
 }
 
+/**
+ * Получение информации о истории ставок лота
+ *
+ * @param int $lot_id
+ *
+ * @return array
+ */
+function getHistoryRates(int $lot_id)
+{
+    $link = connectToDatabase();
+   $sql_get_list_rates = "SELECT name, cost, rates.date_create 
+                        FROM Rates LEFT JOIN Users ON users.id=rates.user_id 
+                        WHERE lot_id=?";
+    $stmt = mysqli_prepare($link,   $sql_get_list_rates);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    
+    return $result;
+
+}
