@@ -17,7 +17,7 @@ $title = $item_lot['lot_name'];
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = getPage404($menu_lot, $id, $item_lot);
 
-$rates_history = getHistoryRates($id); 
+$rates_history = getHistoryRates($id);  
 $count_rates_history = count($rates_history);
 
 if (isset($_SESSION['user']) && isset($_POST['submit'])) {
@@ -43,17 +43,27 @@ if (isset($_SESSION['user']) && isset($_POST['submit'])) {
 }
 
 if(empty($page_content)) {
+    if (isset($_SESSION['user']) && $item_lot['user_id'] !== $_SESSION['user_id'] && $rates_history[0]['user_id'] !== $_SESSION['user_id'] && strtotime(date('Y-m-d H:i')) < strtotime($item_lot['expiration_time'])) {
+         
+        $lot_form_add_rates_tmp = includeTemplate('lot_form_add_rates_tmp.php', [
+            'cost_current' => $cost_current,
+            'item_lot' => $item_lot,
+            'errors' => $errors
+    ]);
+       
+    } else { 
+        $lot_form_add_rates_tmp = '';
+    }
     $history_lot = includeTemplate('lot_history_tmp.php', [
         'rates_history' => $rates_history,
         'count_rates_history' => $count_rates_history
-    ]);
+    ]); 
     $page_content = includeTemplate('main_lot.php', [
-        'menu_lot' => $menu_lot,
-        'item_lot' => $item_lot,
+        'menu_lot' => $menu_lot,        
         'time_limited' => $time_limited,
-        'history_lot' => $history_lot,
-        'cost_current' => $cost_current,        
-        'errors' => $errors
+        'lot_form_add_rates_tmp' => $lot_form_add_rates_tmp,
+        'item_lot' => $item_lot,
+        'history_lot' => $history_lot      
     ]);
 }
 

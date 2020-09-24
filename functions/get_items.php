@@ -79,17 +79,29 @@ function getLotQuery(int $id)
 {
     $link = connectToDatabase();
     $lot_id = $id;
-    $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
-    INNER JOIN Categories ON Lots.category_id=Categories.id 
-    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
+    $sql_get_lot = "SELECT Categories.name AS category, 
+                           Lots.id, 
+                           Lots.name,
+                           Lots.user_id, 
+                           cost_start, 
+                           step_cost, 
+                           detail, 
+                           photo, 
+                           cost, 
+                           date_finished AS expiration_time 
+                    FROM Lots 
+                    INNER JOIN Categories ON Lots.category_id=Categories.id 
+                    LEFT JOIN Rates ON Rates.lot_id=Lots.id 
+                    WHERE Lots.id=?";
     $stmt = mysqli_prepare($link, $sql_get_lot);
     mysqli_stmt_bind_param($stmt, 's',$lot_id);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
+    mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $user_id, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
     mysqli_stmt_fetch($stmt);
     $result["category"] = $category;
     $result["lot_id"] = $lot_id;
     $result["lot_name"] = $lot_name;
+    $result["user_id"] = $user_id;
     $result["cost_start"] = $cost_start;
     $result["step_cost"] = $step_cost;
     $result["detail"] = $detail;
@@ -489,9 +501,9 @@ function listAllItemsForCategory (int $id_category) {
 function getHistoryRates(int $lot_id)
 {
     $link = connectToDatabase();
-   $sql_get_list_rates = "SELECT name, cost, rates.date_create 
+   $sql_get_list_rates = "SELECT name, cost, rates.user_id, rates.date_create 
                         FROM Rates LEFT JOIN Users ON users.id=rates.user_id 
-                        WHERE lot_id=?";
+                        WHERE lot_id=? ORDER BY rates.date_create DESC";
     $stmt = mysqli_prepare($link,   $sql_get_list_rates);
     mysqli_stmt_bind_param($stmt, 'i', $lot_id);
     mysqli_stmt_execute($stmt);
@@ -501,3 +513,4 @@ function getHistoryRates(int $lot_id)
     return $result;
 
 }
+

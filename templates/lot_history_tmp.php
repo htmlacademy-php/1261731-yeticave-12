@@ -1,7 +1,7 @@
 <div class="history">
                     <h3>История ставок (<span><?= $count_rates_history; ?></span>)</h3>
                     <table class="history__list">
-                    <?php $i = 0; ?>
+                                        <?php $i = 0; ?>
                 <?php while ($i < count($rates_history)): ?>
                         
                         <tr class="history__item">
@@ -13,3 +13,4 @@
                 <?php endwhile; ?>
                     </table>
                 </div>
+                
