@@ -53,11 +53,11 @@ function inputCost($id_lot, $connect)
  * @param $lotid id лота
  * 
  */
-function inputUseridInLotsTable($userid, $lotid) {
+function inputUseridInLotsTable($userid, $lotid) { 
     $link = connectToDatabase(); 
-    $sql_update_winnerid = "UPDATE Lots SET winner_id=? WHERE id=?";
-    $update_winnerid = mysqli_prepare($link, $sql_update_winnerid);
-    mysqli_stmt_bind_param($update_winnerid, 'ii', $userid, $lotid); 
-    mysqli_stmt_execute($update_winnerid);
+    $user_id = intval($userid);
+    $lot_id = intval($lotid); 
+    $sql_update_winnerid = "UPDATE Lots SET winner_id=$user_id WHERE id=$lot_id"; 
+    mysqli_query($link, $sql_update_winnerid);
 
 }

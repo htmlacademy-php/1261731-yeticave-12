@@ -17,6 +17,7 @@ $title = $item_lot['lot_name'];
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = getPage404($menu_lot, $id, $item_lot);
 
+
 $rates_history = getHistoryRates($id);  
 $count_rates_history = count($rates_history);
 
@@ -74,7 +75,7 @@ if(empty($page_content)) {
         'user_name' => $user_name,        
         'categories' => $categories
     ]);
-
+print_r(get_noun_plural_form(5,'минута', 'минуты', 'минут')); die("lot_77_gotoget");
 
 print($layout_content);
 

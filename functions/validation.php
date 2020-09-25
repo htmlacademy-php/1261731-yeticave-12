@@ -143,7 +143,7 @@ function validateFormatEmail($name)
 function checkUser($email, $password)
 {
     $errors = [];
-    $email = $_POST[$email];
+    $email = mysqli_real_escape_string(connectToDatabase(), $_POST[$email]); 
 
 
     $sql_hash = "SELECT password FROM Users WHERE email='$email'

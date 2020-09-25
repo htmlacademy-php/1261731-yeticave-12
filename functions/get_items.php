@@ -514,3 +514,84 @@ function getHistoryRates(int $lot_id)
 
 }
 
+/**
+ * Возвращает корректную форму множественного числа
+ * Ограничения: только для целых чисел
+ *
+ * Пример использования:
+ * $remaining_minutes = 5;
+ * echo "Я поставил таймер на {$remaining_minutes} " .
+ *     get_noun_plural_form(
+ *         $remaining_minutes,
+ *         'минута',
+ *         'минуты',
+ *         'минут'
+ *     );
+ * Результат: "Я поставил таймер на 5 минут"
+ *
+ * @param int $number Число, по которому вычисляем форму множественного числа
+ * @param string $one Форма единственного числа: яблоко, час, минута
+ * @param string $two Форма множественного числа для 2, 3, 4: яблока, часа, минуты
+ * @param string $many Форма множественного числа для остальных чисел
+ *
+ * @return string Рассчитанная форма множественнго числа
+ */
+function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+{
+    $number = (int) $number;
+    $mod10 = $number % 10;
+    $mod100 = $number % 100;
+
+    switch (true) {
+        case ($mod100 >= 11 && $mod100 <= 20):
+            return $many;
+
+        case ($mod10 > 5):
+            return $many;
+
+        case ($mod10 === 1):
+            return $one;
+
+        case ($mod10 >= 2 && $mod10 <= 4):
+            return $two;
+
+        default:
+            return $many;
+    }
+}
+
+function getReadableTime($date_creat_rate) {
+    $start_date = $date_creat_rate;
+
+    $current_date = strtotime(date('Y-m-d H:i'));
+    $date_creat_rate = strtotime($date_creat_rate);
+
+    $time_difference_seconds = ($current_date - $date_creat_rate);
+    $time_difference_hours = ($current_date - $date_creat_rate) / 3600;
+    $time_difference_minets = ($current_date - $date_creat_rate) / 60;
+
+    if ($time_difference < 24) {
+        
+        $diff_in_hour = floor($time_difference_hours);
+      
+        $diff_in_min = $time_difference_minets - ($diff_in_hour * 60);
+        $diff_in_min = round($diff_in_min);
+
+        if (0 <= $diff_in_hour) {
+            $time_limit[] = $diff_in_hour;
+            $time_limit[] = $diff_in_min;
+        } else {
+            $time_limit[] = 0;
+            $time_limit[] = 0;
+      }
+      $get_word_for_hours = get_noun_plural_form($time_limit[0], 'час', 'часа', 'часов');
+      $get_word_for_minets = get_noun_plural_form($time_limit[1], 'минута', 'минуты', 'минут');
+
+      $result = $time_limit[0] + ' ' + $get_word_for_hours + ': ' + $time_limit[1] + ' ' + $get_word_for_minets;
+    } else {
+        $result = $start_date;
+    }
+    
+
+    return $result;
+}
