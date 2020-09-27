@@ -561,16 +561,17 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
 }
 
 function getReadableTime($date_creat_rate) {
+    
     $start_date = $date_creat_rate;
 
     $current_date = strtotime(date('Y-m-d H:i'));
     $date_creat_rate = strtotime($date_creat_rate);
 
     $time_difference_seconds = ($current_date - $date_creat_rate);
-    $time_difference_hours = ($current_date - $date_creat_rate) / 3600;
-    $time_difference_minets = ($current_date - $date_creat_rate) / 60;
+    $time_difference_hours = $time_difference_seconds / 3600;
+    $time_difference_minets = $time_difference_seconds / 60;
 
-    if ($time_difference < 24) {
+    if ($time_difference_hours < 24) {
         
         $diff_in_hour = floor($time_difference_hours);
       
@@ -587,7 +588,8 @@ function getReadableTime($date_creat_rate) {
       $get_word_for_hours = get_noun_plural_form($time_limit[0], 'час', 'часа', 'часов');
       $get_word_for_minets = get_noun_plural_form($time_limit[1], 'минута', 'минуты', 'минут');
 
-      $result = $time_limit[0] + ' ' + $get_word_for_hours + ': ' + $time_limit[1] + ' ' + $get_word_for_minets;
+      $result = $time_limit[0] . ' ' . $get_word_for_hours . ': ' . $time_limit[1] . ' ' . $get_word_for_minets; 
+      
     } else {
         $result = $start_date;
     }

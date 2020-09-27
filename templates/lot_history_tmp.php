@@ -7,7 +7,7 @@
                         <tr class="history__item">
                             <td class="history__name"><?= $rates_history[$i]['name']; ?></td>
                             <td class="history__price"><?= $rates_history[$i]['cost']; ?> р</td>
-                            <td class="history__time"><?= $rates_history[$i]['date_create']; ?></td>
+                            <td class="history__time"><?= getReadableTime($rates_history[$i]['date_create']); ?></td>
                         </tr>
                         <?php $i++; ?>
                 <?php endwhile; ?>
