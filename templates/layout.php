@@ -50,7 +50,7 @@
             <?php $i = 0; ?>
             <?php while ($i < count($categories)): ?>
                 <li class="nav__item">
-                    <a href="/lots_by_categories.php"><?= $categories[$i]['name']; ?></a>
+                    <a href="/lots_by_categories.php?page=1&limit=9&id_category_lot=<?= $categories[$i]['id']; ?>"><?= $categories[$i]['name']; ?></a>
                 </li>
                 <?php $i++; ?>
             <?php endwhile; ?>
@@ -99,7 +99,7 @@
                 </svg>
             </a>
         </div>
-        <a class="main-footer__add-lot button" href="add_lot.php">Добавить лот</a>
+        <a class="main-footer__add-lot button" href="/add.php">Добавить лот</a>
         <div class="main-footer__developed-by">
             <span class="visually-hidden">Разработано:</span>
             <a class="logo-academy" href="https://htmlacademy.ru/intensive/php">

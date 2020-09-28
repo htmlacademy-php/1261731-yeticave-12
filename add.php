@@ -11,14 +11,26 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+$title = "Добавление лота";
 $errors = [];
 $user_name = $_SESSION['user'] ?? null;
-$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date']; // для передачи в метод isEmpty
+$required_fields = [
+                     'lot-name', 
+                     'category', 
+                     'message', 
+                     'lot-rate', 
+                     'lot-step', 
+                     'lot-date'                     
+                    ]; 
 $categories = getCategories();
 
 if (isset($_POST['submit'])) {
     if (isEmpty($required_fields)) { 
         $errors = isEmpty($required_fields);
+    } 
+    if (isLoadFile($errors)) {  
+       $errors = isLoadFile($errors); 
+       
     } else {
         $rules = [
             'lot-rate' => validateLotRate('lot-rate'),
@@ -62,7 +74,7 @@ if (empty($errors) && isset($_POST['lot-name'])) {
 $menu_lot = includeTemplate('menu_lot.php', ['categories' => $categories]);
 $page_content = includeTemplate('add_lot.php',
     ['menu_lot' => $menu_lot, 'categories' => $categories, 'errors' => $errors]);
-$head = includeTemplate('head_add_lot.php');
+$head = includeTemplate('head_add_lot.php', ['title' => $title]);
 $layout_content = includeTemplate('layout.php', [
     'head' => $head,
     'content' => $page_content,
@@ -70,6 +82,6 @@ $layout_content = includeTemplate('layout.php', [
     'categories' => $categories
 ]);
 
-
+  
 print($layout_content);
 

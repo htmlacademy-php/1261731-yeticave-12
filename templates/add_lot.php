@@ -14,10 +14,13 @@
         <?php $classname = isset($errors['category']) ? "form__item--invalid" : ""; ?>
         <div class="form__item <?=$classname;?>">
             <label for="category">Категория <sup>*</sup></label>
-            <select id="category" name="category">
-                <option>Выберите категорию</option>
+            <select id="category" name="category">            
+            <option>Выберите категорию</option>            
                 <?php $j = 0; ?>
                 <?php while ($j < count($categories)): ?>
+            <?php if (getPostVal('category') === $categories[$j]['id']): ?> 
+                <option selected value="<?= $categories[$j]['id']; ?>"><?= $categories[$j]['name']; ?></option>                
+            <?php endif; ?>
                     <option value="<?= $categories[$j]['id']; ?>"><?= $categories[$j]['name']; ?></option>
                     <?php $j++; ?>
                 <?php endwhile; ?>

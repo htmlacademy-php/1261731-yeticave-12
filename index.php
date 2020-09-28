@@ -14,11 +14,10 @@ $categories = getCategories();
 
 $menu_category = includeTemplate('menu_index.php', ['categories' => $categories]);
 $page_content = includeTemplate('main.php', ['lots' => $lots, 'menu_category' => $menu_category]);
-$head = includeTemplate('head_lot_index.php');
+$head = includeTemplate('head_lot_index.php', ['title' => $title]);
 $layout_content = includeTemplate('layout.php', [
     'head' => $head,
-    'content' => $page_content,
-    'title' => $title,
+    'content' => $page_content,    
     'user_name' => $user_name,
     'categories' => $categories
 ]);
