@@ -48,3 +48,6 @@ ALTER TABLE Rates ADD FOREIGN KEY (lot_id) REFERENCES Lots (id);
 CREATE FULLTEXT INDEX lots_search ON Lots(name, detail);
 
 
+
+
+
