@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
             $errors['email'] = "Введите провильный формат email";
         } else {
             $rules = [
-                'email' => validateFormatEmail('email')
+                'email' => validateFormatEmail($_POST['email'])
             ];
 
             foreach ($_POST as $key => $value) {

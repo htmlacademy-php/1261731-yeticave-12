@@ -20,11 +20,10 @@ $page_content = includeTemplate('myrates_tmp.php', [
     'user_contacts' => $user_contacts,
     'my_rates' => $my_rates    
    ]);
-$head = includeTemplate('head_add_lot.php');
+$head = includeTemplate('head_add_lot.php', ['title' => $title]);
 $layout_content = includeTemplate('layout.php', [
     'head' => $head,
-    'content' => $page_content,
-    'title' => $title,
+    'content' => $page_content,    
     'user_name' => $user_name,
     'categories' => $categories
    ]);

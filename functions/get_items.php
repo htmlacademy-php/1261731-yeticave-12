@@ -67,35 +67,6 @@ function getLots()
     return queryResult(connectToDatabase(), $sql_lots);
 }
 
-/**
- * Поиск лотов по запросу пользователя
- * Реализация поисковой системы по каталогу лотов
- *
- * @return array|null
- */
-function searchLots()
-{
-    if (isset($_GET['find'])) {
-        $query_for_search = trim($_GET['search']);
-        if (!empty($query_for_search)) {
-            return queryResult(connectToDatabase(),"SELECT
-Categories.name, 
-Lots.id, 
-category_id, 
-winner_id, 
-user_id, 
-Lots.name AS lot_name, 
-detail, 
-cost_start,
-step_cost,
-photo,
-date_create,
-date_finished
-FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
-WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search')");
-        }
-    }
-}
 
 /**
  * Получение информации о лоте по его id
@@ -108,17 +79,29 @@ function getLotQuery(int $id)
 {
     $link = connectToDatabase();
     $lot_id = $id;
-    $sql_get_lot = "SELECT Categories.name AS category, Lots.id, Lots.name, cost_start, step_cost, detail, photo, cost, date_finished AS expiration_time FROM Lots 
-    INNER JOIN Categories ON Lots.category_id=Categories.id 
-    LEFT JOIN Rates ON Rates.lot_id=Lots.id WHERE Lots.id=?";
+    $sql_get_lot = "SELECT Categories.name AS category, 
+                           Lots.id, 
+                           Lots.name,
+                           Lots.user_id, 
+                           cost_start, 
+                           step_cost, 
+                           detail, 
+                           photo, 
+                           cost, 
+                           date_finished AS expiration_time 
+                    FROM Lots 
+                    INNER JOIN Categories ON Lots.category_id=Categories.id 
+                    LEFT JOIN Rates ON Rates.lot_id=Lots.id 
+                    WHERE Lots.id=?";
     $stmt = mysqli_prepare($link, $sql_get_lot);
     mysqli_stmt_bind_param($stmt, 's',$lot_id);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
+    mysqli_stmt_bind_result($stmt, $category, $lot_id, $lot_name, $user_id, $cost_start, $step_cost, $detail, $photo, $cost, $expiration_time);
     mysqli_stmt_fetch($stmt);
     $result["category"] = $category;
     $result["lot_id"] = $lot_id;
     $result["lot_name"] = $lot_name;
+    $result["user_id"] = $user_id;
     $result["cost_start"] = $cost_start;
     $result["step_cost"] = $step_cost;
     $result["detail"] = $detail;
@@ -377,9 +360,8 @@ function getCetegoryName($id_category)
  *
  * @return array
  */
-function listLotsByCategories(int $id_category)
+function listLotsByCategories(int $id_category, $amount_item_on_page, $start_item)
 {
-
     $link = connectToDatabase();
     $sql_get_list_lots_by_categories = "SELECT
 Categories.name, 
@@ -395,9 +377,10 @@ photo,
 date_create,
 date_finished
 FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
-WHERE Categories.id=?";
+WHERE Categories.id=? AND date_finished>current_date LIMIT ? OFFSET ?";
+
     $stmt = mysqli_prepare($link, $sql_get_list_lots_by_categories);
-    mysqli_stmt_bind_param($stmt, 'i', $id_category);
+    mysqli_stmt_bind_param($stmt, 'iii', $id_category, $amount_item_on_page, $start_item);
     mysqli_stmt_execute($stmt);   
     $res = mysqli_stmt_get_result($stmt);
     $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -405,3 +388,212 @@ WHERE Categories.id=?";
     return $result;
 }
 
+/**
+ * Поиск лотов по запросу пользователя
+ * Реализация поисковой системы по каталогу лотов
+ *
+ * @return array|null
+ */
+function searchLots(int $number_page)
+{
+    $link = connectToDatabase();
+    $amount_item_on_page = 9;
+    $start_item = ($number_page - 1) * $amount_item_on_page;
+
+    if (isset($_GET['find'])) {
+        $query_for_search = trim($_GET['search']);
+        if (!empty($query_for_search)) {
+            $sql_get_list_lots_by_query_search = 
+             "SELECT
+             Categories.name, 
+             Lots.id, 
+             category_id, 
+             winner_id, 
+             user_id, 
+             Lots.name AS lot_name, 
+             detail, 
+             cost_start,
+             step_cost,
+             photo,
+             date_create,
+             date_finished
+             FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+             WHERE MATCH(Lots.name, Lots.detail) AGAINST('$query_for_search') 
+             LIMIT $amount_item_on_page OFFSET ?";
+
+$stmt = mysqli_prepare($link, $sql_get_list_lots_by_query_search);
+mysqli_stmt_bind_param($stmt, 'i', $start_item);
+mysqli_stmt_execute($stmt);   
+$res = mysqli_stmt_get_result($stmt);
+$result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+return $result;
+        }
+    }
+}
+
+function allListItemsSearchLots()
+{
+    $link = connectToDatabase();
+    
+
+    if (isset($_GET['find'])) {
+        $query_for_search = trim($_GET['search']);
+        if (!empty($query_for_search)) {
+            $sql_get_list_lots_by_query_search = 
+             "SELECT
+             Categories.name, 
+             Lots.id, 
+             category_id, 
+             winner_id, 
+             user_id, 
+             Lots.name AS lot_name, 
+             detail, 
+             cost_start,
+             step_cost,
+             photo,
+             date_create,
+             date_finished
+             FROM Lots INNER JOIN Categories ON Lots.category_id=Categories.id 
+             WHERE MATCH(Lots.name, Lots.detail) AGAINST(?)";
+
+$stmt = mysqli_prepare($link, $sql_get_list_lots_by_query_search);
+mysqli_stmt_bind_param($stmt, 's', $query_for_search);
+mysqli_stmt_execute($stmt);   
+$res = mysqli_stmt_get_result($stmt);
+$result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+
+return $result;
+        }
+    }
+}
+
+/**
+ * Возвращает список всей записей из таблицы лотов имеющих категорию, 
+ * которую передали в нее
+ * 
+ * @param int $id_category
+ * 
+ * @return array
+ */
+function listAllItemsForCategory (int $id_category) {
+    $link = connectToDatabase();
+    
+        $sql_get_list_lots_by_categories = "SELECT id FROM Lots WHERE category_id=?";    
+ 
+    $stmt = mysqli_prepare($link, $sql_get_list_lots_by_categories);
+    mysqli_stmt_bind_param($stmt, 'i', $id_category);
+    mysqli_stmt_execute($stmt);   
+    $res = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    
+    return $result;
+
+}
+
+/**
+ * Получение информации о истории ставок лота
+ *
+ * @param int $lot_id
+ *
+ * @return array
+ */
+function getHistoryRates(int $lot_id)
+{
+    $link = connectToDatabase();
+   $sql_get_list_rates = "SELECT name, cost, rates.user_id, rates.date_create 
+                        FROM Rates LEFT JOIN Users ON users.id=rates.user_id 
+                        WHERE lot_id=? ORDER BY rates.date_create DESC";
+    $stmt = mysqli_prepare($link,   $sql_get_list_rates);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    
+    return $result;
+
+}
+
+/**
+ * Возвращает корректную форму множественного числа
+ * Ограничения: только для целых чисел
+ *
+ * Пример использования:
+ * $remaining_minutes = 5;
+ * echo "Я поставил таймер на {$remaining_minutes} " .
+ *     get_noun_plural_form(
+ *         $remaining_minutes,
+ *         'минута',
+ *         'минуты',
+ *         'минут'
+ *     );
+ * Результат: "Я поставил таймер на 5 минут"
+ *
+ * @param int $number Число, по которому вычисляем форму множественного числа
+ * @param string $one Форма единственного числа: яблоко, час, минута
+ * @param string $two Форма множественного числа для 2, 3, 4: яблока, часа, минуты
+ * @param string $many Форма множественного числа для остальных чисел
+ *
+ * @return string Рассчитанная форма множественнго числа
+ */
+function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+{
+    $number = (int) $number;
+    $mod10 = $number % 10;
+    $mod100 = $number % 100;
+
+    switch (true) {
+        case ($mod100 >= 11 && $mod100 <= 20):
+            return $many;
+
+        case ($mod10 > 5):
+            return $many;
+
+        case ($mod10 === 1):
+            return $one;
+
+        case ($mod10 >= 2 && $mod10 <= 4):
+            return $two;
+
+        default:
+            return $many;
+    }
+}
+
+function getReadableTime($date_creat_rate) {
+    
+    $start_date = $date_creat_rate;
+
+    $current_date = strtotime(date('Y-m-d H:i'));
+    $date_creat_rate = strtotime($date_creat_rate);
+
+    $time_difference_seconds = ($current_date - $date_creat_rate);
+    $time_difference_hours = $time_difference_seconds / 3600;
+    $time_difference_minets = $time_difference_seconds / 60;
+
+    if ($time_difference_hours < 24) {
+        
+        $diff_in_hour = floor($time_difference_hours);
+      
+        $diff_in_min = $time_difference_minets - ($diff_in_hour * 60);
+        $diff_in_min = round($diff_in_min);
+
+        if (0 <= $diff_in_hour) {
+            $time_limit[] = $diff_in_hour;
+            $time_limit[] = $diff_in_min;
+        } else {
+            $time_limit[] = 0;
+            $time_limit[] = 0;
+      }
+      $get_word_for_hours = get_noun_plural_form($time_limit[0], 'час', 'часа', 'часов');
+      $get_word_for_minets = get_noun_plural_form($time_limit[1], 'минута', 'минуты', 'минут');
+
+      $result = $time_limit[0] . ' ' . $get_word_for_hours . ': ' . $time_limit[1] . ' ' . $get_word_for_minets; 
+      
+    } else {
+        $result = $start_date;
+    }
+    
+
+    return $result;
+}

@@ -63,14 +63,16 @@ function validateCategory(string $name)
 function validateFiles($name)
 {
     if (!empty($_FILES[$name]['name'])) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_tmp = $_FILES[$name]['tmp_name'];
-        $file_type = mime_content_type($file_tmp);
+        
         $png = "image/png";
         $jpeg = "image/jpeg";
 
+        $file_type = finfo_file($finfo, $file_tmp);
 
-        if (strcmp($file_type, $png) == 1 || strcmp($file_type, $jpeg) == 1) {
-
+        if ($file_type !== $png && $file_type !== $jpeg) {
+            
             return "Загрузите картинку (графический файл) в формате: jpg, jpeg, png";
         }
 
@@ -113,12 +115,19 @@ function validateLotStep($name)
  */
 function validateFormatEmail($name)
 {
-    $name = $_POST[$name];
-    $items = queryResult(
-        connectToDatabase(),
-        "SELECT email FROM Users WHERE email LIKE '" . $name . "'");
+    $link = connectToDatabase();
+    $email = $name;
+    $sql_get_email = "SELECT email FROM Users WHERE email LIKE ?" ;
+    $stmt = mysqli_prepare($link, $sql_get_email);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $user_email);
+    mysqli_stmt_fetch($stmt);
+    $result = $user_email;
+    mysqli_stmt_close($stmt);
+    
 
-    if (!empty($items)) {
+    if (!empty($result)) {
         return "Email уже занят";
     }
 
@@ -134,10 +143,11 @@ function validateFormatEmail($name)
 function checkUser($email, $password)
 {
     $errors = [];
-    $email = $_POST[$email];
+    $email = mysqli_real_escape_string(connectToDatabase(), $_POST[$email]); 
 
 
-    $sql_hash = "SELECT password FROM Users WHERE email='$email'";
+    $sql_hash = "SELECT password FROM Users WHERE email='$email'
+    ";
     $hash_from_db = queryResult(connectToDatabase(), $sql_hash);
     $hash_from_db = $hash_from_db[0][$password];
 
@@ -162,9 +172,9 @@ function checkUser($email, $password)
 function validateCost(int $id_lot, string $cost)
 {
     $errors = null;
-    $last_cost_lot = getCurrentCost($id_lot);
+    $last_cost_lot = getCurrentCost($id_lot); 
     $step_cost_lot = getStepCostLots($id_lot);
-    $control_cost = $last_cost_lot + $step_cost_lot;
+    $control_cost = $last_cost_lot + $step_cost_lot; 
     $cost_from_user = $_POST[$cost];
     if($cost_from_user <= 0) {
         $errors = "Не корректная цена";
@@ -173,4 +183,22 @@ function validateCost(int $id_lot, string $cost)
     }
 
     return $errors;
+}
+
+/**
+ * @param array $errors массив ошибок может быть пустым
+ * @return array
+ * 
+ * Проверяет загружен ли файл с картинкой лота
+ * возвращаем массив ошибок [название поля => суть ошибки]
+ */
+function isLoadFile($errors=[])
+{   
+    
+        if (empty($_FILES['avatar']['name'])) {
+            
+            $errors['avatar'] = 'Загрузите файл';        
+    }
+    
+    return $errors = array_filter($errors);
 }
